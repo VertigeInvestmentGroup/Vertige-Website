@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio & Positions | Vertige Investment Group</title>
+    <link rel="icon" type="image/png" href="Gemini_Generated_Image_ix8rw5ix8rw5ix8r.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=5">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .portfolio-dashboard {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .portfolio-main-stat {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-large {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1;
+            color: var(--brand-indigo);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-label-large {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+
+        .portfolio-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all var(--transition-base);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 26, 71, 0.1);
+        }
+
+        .metric-value {
+            font-size: 2.25rem;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            color: var(--brand-indigo);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-name {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Allocation Section */
+        .allocation-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 6rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 3rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        .allocation-text h3 {
+            font-size: 1.75rem;
+            color: var(--brand-indigo);
+            margin-bottom: 1.5rem;
+            font-family: var(--font-heading);
+        }
+
+        .allocation-text p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .allocation-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .allocation-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .allocation-list li:last-child {
+            border-bottom: none;
+        }
+
+        .allocation-item-name {
+            display: flex;
+            align-items: center;
+        }
+
+        .allocation-list li span:last-child {
+            color: var(--brand-indigo);
+            font-weight: 600;
+        }
+
+        .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 12px;
+        }
+
+        /* Holdings Section */
+        .holdings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 6rem;
+        }
+
+        .holding-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .holding-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px -10px rgba(46, 26, 71, 0.15);
+            border-color: rgba(46, 26, 71, 0.2);
+        }
+
+        .holding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .holding-ticker {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--brand-indigo);
+        }
+
+        .holding-name {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .holding-sector {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            background: var(--brand-indigo-light);
+            color: var(--brand-indigo);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 1rem 0;
+        }
+
+        .holding-thesis {
+            color: var(--text-color);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 900px) {
+            .portfolio-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .allocation-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="antigravity-bg">
+        <div class="ag-moving-visual"></div>
+        <div class="ag-layer layer-2"></div> <!-- Particles -->
+    </div>
+
+    <nav id="navbar" class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo_transparent.png" alt="Vertige Logo" class="logo-img">
+                <div class="logo-text-wrapper">
+                    <span class="logo-text-primary">Vertige</span>
+                    <span class="logo-text-secondary">Investment Group</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="fund.html">The Fund</a></li>
+                <li><a href="portfolio.html" class="active">Portfolio</a></li>
+                <li><a href="team.html">Team</a></li>
+            </ul>
+            <a href="join.html" class="btn btn-primary nav-cta">Join Vertige</a>
+        </div>
+    </nav>
+
+
+    <main class="page-wrapper container">
+        <div class="page-header fade-up" style="padding-top: 140px;">
+            <h1 class="hero-title">Portfolio & Positions</h1>
+            <p class="hero-subtitle">Explore the fund's current capital deployments, sector allocations, and
+                high-conviction fundamental equity pitches.</p>
+        </div>
+
+        <!-- Portfolio Dashboard -->
+        <h2 class="hero-title fade-up"
+            style="font-size: 2rem; margin-bottom: 2rem; border-bottom: 2px solid var(--brand-indigo); padding-bottom: 0.5rem; display: inline-block;">
+            Current Overview</h2>
+        <div class="portfolio-dashboard fade-up">
+            <div class="portfolio-main-stat">
+                <div class="stat-large" style="color: #4ade80;">+28.4%</div>
+                <div class="stat-label-large" style="margin-top: 0.5rem; color: var(--text-color);">5-Year Annualized
+                    Return</div>
+            </div>
+
+            <div class="portfolio-metrics">
+                <div class="metric-card">
+                    <span class="metric-value">12.5%</span>
+                    <span class="metric-name">Volatility (Ann.)</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">2.8</span>
+                    <span class="metric-name">Sortino Ratio</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">-8.4%</span>
+                    <span class="metric-name">Max Drawdown</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">0.85</span>
+                    <span class="metric-name">Portfolio Beta</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Asset Allocation Section -->
+        <div class="fade-up" style="margin-bottom: 4rem;">
+            <h2 class="hero-title"
+                style="font-size: 2rem; margin-bottom: 2rem; border-bottom: 2px solid var(--brand-indigo); padding-bottom: 0.5rem; display: inline-block;">
+                Sector Allocation</h2>
+            <div class="allocation-container">
+                <div class="chart-wrapper">
+                    <canvas id="allocationChart"></canvas>
+                </div>
+                <div class="allocation-text">
+                    <h3>Strategic Positioning</h3>
+                    <p>Our portfolio is currently overweight in Technology and Healthcare, reflecting our conviction in
+                        secular growth trends and inelastic demand. We maintain strict sector limits to isolate
+                        idiosyncratic risk while hedging core macroeconomic exposures.</p>
+                    <ul class="allocation-list">
+                        <li>
+                            <div class="allocation-item-name"><span class="color-dot"
+                                    style="background-color: #0a192f;"></span> Technology</div>
+                            <span>35%</span>
+                        </li>
+                        <li>
+                            <div class="allocation-item-name"><span class="color-dot"
+                                    style="background-color: #21437a;"></span> Healthcare</div>
+                            <span>25%</span>
+                        </li>
+                        <li>
+                            <div class="allocation-item-name"><span class="color-dot"
+                                    style="background-color: #3b82f6;"></span> Consumer Discretionary</div>
+                            <span>15%</span>
+                        </li>
+                        <li>
+                            <div class="allocation-item-name"><span class="color-dot"
+                                    style="background-color: #8da4d6;"></span> Industrials</div>
+                            <span>15%</span>
+                        </li>
+                        <li>
+                            <div class="allocation-item-name"><span class="color-dot"
+                                    style="background-color: #d4af37;"></span> Financials & Other</div>
+                            <span>10%</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Holdings Section -->
+        <div class="fade-up">
+            <h2 class="hero-title"
+                style="font-size: 2rem; margin-bottom: 2rem; border-bottom: 2px solid var(--brand-indigo); padding-bottom: 0.5rem; display: inline-block;">
+                Featured Holdings</h2>
+            <div class="holdings-grid">
+
+                <div class="holding-card">
+                    <div class="holding-header">
+                        <div class="holding-ticker">MSFT</div>
+                        <div class="holding-name">Microsoft Corp.</div>
+                    </div>
+                    <div class="holding-sector">Technology</div>
+                    <p class="holding-thesis">Core holding driven by insurmountable enterprise software moats and
+                        accelerated Azure cloud growth. Early AI monetization via Copilot provides significant upside
+                        optionality not fully captured by consensus estimates.</p>
+                </div>
+
+                <div class="holding-card">
+                    <div class="holding-header">
+                        <div class="holding-ticker">LLY</div>
+                        <div class="holding-name">Eli Lilly and Co.</div>
+                    </div>
+                    <div class="holding-sector">Healthcare</div>
+                    <p class="holding-thesis">Unmatched pipeline density in the GLP-1 space. Our models indicate
+                        terminal market size for obesity treatments is structurally underappreciated, yielding a
+                        sustained premium valuation compared to peer pharma majors.</p>
+                </div>
+
+                <div class="holding-card">
+                    <div class="holding-header">
+                        <div class="holding-ticker">LVMUY</div>
+                        <div class="holding-name">LVMH</div>
+                    </div>
+                    <div class="holding-sector">Consumer Discretionary</div>
+                    <p class="holding-thesis">Diversified exposure to the resilient ultra-high-net-worth consumer base.
+                        Best-in-class brand equity allows for pricing power that outpaces inflation without destroying
+                        volume demand.</p>
+                </div>
+
+                <div class="holding-card">
+                    <div class="holding-header">
+                        <div class="holding-ticker">CRWD</div>
+                        <div class="holding-name">CrowdStrike</div>
+                    </div>
+                    <div class="holding-sector">Technology</div>
+                    <p class="holding-thesis">Rapid module adoption and platform stickiness secure its position as the
+                        de facto next-gen endpoint security leader. High gross retention limits downside despite
+                        elevated near-term multiples.</p>
+                </div>
+
+                <div class="holding-card">
+                    <div class="holding-header">
+                        <div class="holding-ticker">VRTX</div>
+                        <div class="holding-name">Vertex Pharma</div>
+                    </div>
+                    <div class="holding-sector">Healthcare</div>
+                    <p class="holding-thesis">Monopoly position in cystic fibrosis generates robust free cash flow,
+                        funding pipeline expansion into sickle cell and acute pain. Near-term catalysts provide
+                        asymmetric risk/reward.</p>
+                </div>
+
+                <div class="holding-card">
+                    <div class="holding-header">
+                        <div class="holding-ticker">JPM</div>
+                        <div class="holding-name">J.P. Morgan Chase</div>
+                    </div>
+                    <div class="holding-sector">Financials</div>
+                    <p class="holding-thesis">Fortress balance sheet and diversified revenue streams insulate the firm
+                        from isolated macroeconomic shocks. Best-in-class management provides a stable anchor for the
+                        broader portfolio.</p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+
+    <!-- Spacer to enable scrolling -->
+    <div style="height: 50vh;"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo-col">
+                <a href="index.html" class="footer-logo">
+                    <img src="logo_white_transparent.png" alt="Vertige Logo">
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text-primary">Vertige</span>
+                        <span class="logo-text-secondary">Investment Group</span>
+                    </div>
+                </a>
+            </div>
+            <div class="footer-links-wrapper">
+                <div class="footer-col">
+                    <h4>Our Firm</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="team.html">Leadership</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Insights</h4>
+                    <a href="portfolio.html">Research & Performance</a>
+                    <a href="#">Market Updates</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Careers</h4>
+                    <a href="join.html">Recruiting</a>
+                    <a href="#">Analyst Training</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <div class="footer-socials">
+                        <a href="https://ca.linkedin.com/company/vertige-investment-group" target="_blank"
+                            rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor" fill-rule="evenodd"
+                                    d="M3.86 8.926h3.341V20.57h-3.34zm1.586-1.457H5.42c-1.21 0-1.993-.89-1.993-2.017 0-1.15.807-2.023 2.04-2.023s1.991.87 2.016 2.02c0 1.127-.783 2.02-2.038 2.02M20.57 20.571h-3.79v-6.027c0-1.577-.592-2.653-1.895-2.653-.997 0-1.551.726-1.81 1.427-.096.25-.081.6-.081.952v6.301H9.241s.049-10.675 0-11.645h3.754v1.827c.222-.799 1.421-1.94 3.335-1.94 2.375 0 4.24 1.677 4.24 5.282z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/vertigeca" target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor"
+                                    d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6">
+                                </path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-legal-links">
+                <a href="#">Privacy and Security</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Regulatory Disclosures</a>
+                <a href="#">Site Map</a>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 Vertige Investment Group. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

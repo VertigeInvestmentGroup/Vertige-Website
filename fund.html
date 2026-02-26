@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Fund | Vertige Investment Group</title>
+    <link rel="icon" type="image/png" href="Gemini_Generated_Image_ix8rw5ix8rw5ix8r.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=4">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo_transparent.png" alt="Vertige Logo" class="logo-img">
+                <div class="logo-text-wrapper">
+                    <span class="logo-text-primary">Vertige</span>
+                    <span class="logo-text-secondary">Investment Group</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="fund.html" class="active">The Fund</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="team.html">Team</a></li>
+            </ul>
+            <a href="join.html" class="btn btn-primary nav-cta">Join Vertige</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="page-wrapper">
+        <div class="container">
+
+            <div class="fund-hero-grid fade-up"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-bottom: 4rem; position: relative;">
+                <div class="fund-header-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h1 class="hero-title" style="color: var(--brand-indigo); font-size: 3.5rem; margin-bottom: 0;">The
+                        Vertige Fund</h1>
+                    <p class="hero-subtitle"
+                        style="color: var(--text-color); font-size: 1.25rem; line-height: 1.8; margin-bottom: 0;">
+                        Vertige Investment Group operates a fully student-run, live-capital investment fund. We bridge
+                        the
+                        gap between academic theory and real-world market execution by providing undergraduate analysts
+                        with
+                        institutional-grade portfolio management experience. Our objective is clear: consistently
+                        outperform
+                        market benchmarks through rigorous, asymmetric insight while building the next generation of
+                        financial leaders.
+                    </p>
+                </div>
+                <div class="fund-hero-visual"
+                    style="position: relative; height: 500px; width: 100%; border-radius: 12px; background: transparent; overflow: hidden; border: none;">
+                    <!-- The Canvas will be injected here by script.js -->
+                    <div id="fund-local-canvas-container"
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- Close container for full width section -->
+
+        <section class="structure-section fade-up"
+            style="background-color: var(--brand-indigo); color: white; padding: 2rem 0; margin: 3rem 0 6rem 0;">
+            <div class="container">
+                <div class="institutional-grid" style="margin: 0; grid-template-columns: repeat(2, 1fr); border: none;">
+                    <div class="institutional-card"
+                        style="border-right: 1px solid rgba(255,255,255,0.15); padding-top: 2rem; padding-bottom: 2rem;">
+                        <h3 style="color: white;">Legal Structure</h3>
+                        <p style="color: rgba(255,255,255,0.85);">Unlike typical simulated academic portfolios, we
+                            operate as a fully compliant Limited Partnership
+                            (LP) regulated by the Province of Ontario. This mandates true fiduciary responsibility and
+                            subjects our student managers to the identical legal, operational, and risk-management
+                            scaffolding of traditional hedge funds.</p>
+                    </div>
+                    <div class="institutional-card" style="padding-top: 2rem; padding-bottom: 2rem;">
+                        <h3 style="color: white;">Dual Mandate</h3>
+                        <p style="color: rgba(255,255,255,0.85);">Our operation is driven by two symbiotic goals:
+                            experiential education and relentless alpha
+                            generation. We deploy real-world capital to ensure our analysts feel the weight of their
+                            convictions, demanding rigorous, institutional-grade underwriting while pursuing strategies
+                            that
+                            consistently beat broad market indices.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container"> <!-- Reopen container for remaining content -->
+
+            <div class="division-card-grid fade-up">
+                <!-- Division A: Fundamental -->
+                <div class="division-card">
+                    <div class="division-header">
+                        <h3>Fundamental Equities</h3>
+                    </div>
+                    <p>Our fundamental division employs a rigorous bottom-up research process to identify high-quality
+                        companies trading at discounts to their intrinsic value. Analysts construct comprehensive
+                        Discounted Cash Flow (DCF) models, perform deep industry competitive analysis, and actively
+                        monitor management execution. We take concentrated, long-only positions designed to harvest
+                        value over a multi-year time horizon.</p>
+                </div>
+
+                <!-- Division B: Quantitative -->
+                <div class="division-card division-card-quant">
+                    <div class="division-header">
+                        <h3>Quantitative Trading</h3>
+                    </div>
+                    <p>The quantitative arm leverages advanced mathematics, computer science, and statistical modeling
+                        to systematically extract alpha from market inefficiencies. Our quant researchers develop
+                        proprietary algorithmic trading strategies that operate entirely independently from fundamental
+                        market sentiment, employing backtested statistical arbitrage and predictive signals to manage
+                        risk dynamically.</p>
+                </div>
+            </div>
+
+        </div> <!-- Close initial container -->
+
+        <!-- Highlighted Analytics Section -->
+        <section class="analytics-section" style="background-color: #eef2f6; padding: 6rem 0; margin: 6rem 0;">
+            <div class="container">
+                <div class="page-header fade-up" style="margin-top: 0; margin-bottom: 2rem;">
+                    <h2 class="hero-title" style="font-size: 3rem;">Performance Analytics</h2>
+                    <p class="hero-subtitle">
+                        The Vertige Fund seeks outsized risk-adjusted returns, consistently benchmarking its performance
+                        against major indexes like the S&P 500 to validate its structural thesis.
+                    </p>
+                </div>
+
+                <div class="chart-wrapper fade-up" style="margin: 2rem 0 0 0;">
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                    <div class="chart-legend-custom">
+                        <div class="legend-item"><span class="legend-color fundamental-color"></span> Vertige
+                            Fundamental</div>
+                        <div class="legend-item"><span class="legend-color quant-color"></span> Vertige Quantitative
+                        </div>
+                        <div class="legend-item"><span class="legend-color sp500-color"></span> S&P 500</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reopen container for Process -->
+        <div class="container">
+            <div class="page-header fade-up" style="margin-top: 4rem; margin-bottom: 2rem;">
+                <h2 class="hero-title" style="font-size: 3rem;">Investment Process</h2>
+                <p class="hero-subtitle">Modeled after top-tier institutional firms and premier university investment
+                    clubs, our process is built on education, collaboration, and exhaustive research.</p>
+            </div>
+
+            <div class="timeline-container fade-up">
+                <div class="timeline-step">
+                    <div class="timeline-marker">1</div>
+                    <div class="timeline-content">
+                        <h3>Education & Training</h3>
+                        <p>All analysts undergo an intensive training program covering financial accounting, DCF
+                            valuation models, and quantitative data science to ensure a foundational understanding of
+                            our
+                            multi-disciplinary philosophy.</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-marker">2</div>
+                    <div class="timeline-content">
+                        <h3>Sector Pitching</h3>
+                        <p>Organized into focused industry groups, our analysts conduct weekly deep-dives into specific
+                            verticals, presenting buy/sell pitches informed by comprehensive modeling and
+                            catalyst-driven
+                            fundamental analysis.</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-marker">3</div>
+                    <div class="timeline-content">
+                        <h3>Professional Review Board</h3>
+                        <p>Ideas are rigorously defended. Analysts must formally pitch their high-conviction strategies
+                            to an
+                            Investment Committee comprised of experienced finance professionals and alumni, mirroring a
+                            high-stakes institutional review.</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="timeline-marker">4</div>
+                    <div class="timeline-content">
+                        <h3>Portfolio Allocation</h3>
+                        <p>Only strategies that survive the professional review board are capitalized and executed
+                            within the
+                            LP framework. Positions are then monitored through active risk management and weekly
+                            performance reporting.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo-col">
+                <a href="index.html" class="footer-logo">
+                    <img src="logo_white_transparent.png" alt="Vertige Logo">
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text-primary">Vertige</span>
+                        <span class="logo-text-secondary">Investment Group</span>
+                    </div>
+                </a>
+            </div>
+            <div class="footer-links-wrapper">
+                <div class="footer-col">
+                    <h4>Our Firm</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="fund.html">The Fund</a>
+                    <a href="team.html">Leadership</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Insights</h4>
+                    <a href="portfolio.html">Research & Performance</a>
+                    <a href="#">Market Updates</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Careers</h4>
+                    <a href="join.html">Recruiting</a>
+                    <a href="#">Analyst Training</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <div class="footer-socials">
+                        <a href="https://ca.linkedin.com/company/vertige-investment-group" target="_blank"
+                            rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor" fill-rule="evenodd"
+                                    d="M3.86 8.926h3.341V20.57h-3.34zm1.586-1.457H5.42c-1.21 0-1.993-.89-1.993-2.017 0-1.15.807-2.023 2.04-2.023s1.991.87 2.016 2.02c0 1.127-.783 2.02-2.038 2.02M20.57 20.571h-3.79v-6.027c0-1.577-.592-2.653-1.895-2.653-.997 0-1.551.726-1.81 1.427-.096.25-.081.6-.081.952v6.301H9.241s.049-10.675 0-11.645h3.754v1.827c.222-.799 1.421-1.94 3.335-1.94 2.375 0 4.24 1.677 4.24 5.282z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/vertigeca" target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor"
+                                    d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6">
+                                </path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-legal-links">
+                <a href="#">Privacy and Security</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Regulatory Disclosures</a>
+                <a href="#">Site Map</a>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 Vertige Investment Group. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

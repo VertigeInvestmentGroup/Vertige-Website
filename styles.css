@@ -1,0 +1,1046 @@
+/* ==========================================================================
+   Design System & Variables - Vertige Investment Group
+   ========================================================================== */
+:root {
+    /* Colors - Clean White Aesthetic */
+    --bg-main: #ffffff;
+    /* Clean white background */
+    --bg-card: #ffffff;
+    --bg-card-hover: #fafafa;
+
+    --text-main: #1f2937;
+    /* Very dark gray */
+    --text-muted: #4b5563;
+    /* Medium-dark gray */
+
+    /* Primary Colors */
+    --brand-indigo: #0a192f;
+    /* Darker, more prominent blue */
+    --brand-gold: #e5b072;
+    --brand-indigo-light: #112240;
+
+    /* Background & Surface */
+    --bg-main: #ffffff;
+    --bg-card: #ffffff;
+    --bg-nav: rgba(255, 255, 255, 0.95);
+
+    /* Text Colors */
+    --text-main: #1f2937;
+    /* Very dark gray */
+    --text-muted: #4b5563;
+    /* Medium-dark gray */
+
+    /* Brand Colors (Derived from the attached logo) */
+    --brand-blue: #637be6;
+    /* Blue nodes from top of logo */
+
+    --accent-primary: var(--brand-blue);
+    --accent-secondary: var(--brand-gold);
+
+    --gradient-text: linear-gradient(to bottom, var(--brand-blue), var(--brand-gold));
+
+    --border-color: rgba(0, 0, 0, 0.08);
+    /* Subtle border */
+    --glass-bg: rgba(255, 255, 255, 0.95);
+    /* Frosty light topnav */
+    --glass-border: transparent;
+    /* Removed faint line separating navbar */
+
+    /* Typography */
+    --font-heading: 'Google Sans Flex', 'Google Sans', 'Google Sans Display', 'Product Sans', 'Figtree', -apple-system, sans-serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Spacing & Layout - Full Width */
+    --container-width: 100%;
+    /* Spans full page */
+    --section-padding: 6rem 5%;
+    /* Percentage-based padding for full-width breathing room */
+
+    /* Animation */
+    --transition-fast: 0.2s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Reset & Base Styles
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+}
+
+/* ==========================================================================
+   Antigravity Background Engine
+   ========================================================================== */
+#antigravity-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: var(--bg-main);
+    box-shadow: none !important;
+    /* Force off any inherited or implicit edge shadow */
+}
+
+/* ==========================================================================
+   Typography & Links
+   ========================================================================== */
+a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    transition: color var(--transition-base);
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--brand-indigo);
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    width: 100%;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+/* Utilities */
+.text-gradient {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    /* Professional square-ish edges */
+    font-weight: 500;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    border: none;
+}
+
+.btn-primary {
+    background: var(--brand-indigo);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--brand-indigo);
+    border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    border-color: var(--brand-indigo);
+    transform: translateY(-2px);
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+}
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    /* padding: 1.25rem 5%; REMOVED THIS to let the container inner handle horizontal padding so it precisely matches hero-content */
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+    background: transparent;
+}
+
+.navbar.scrolled {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+/* Class to hide navbar */
+.navbar.nav-hidden {
+    transform: translateY(-100%);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    gap: 3rem;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-family: var(--font-heading);
+    color: var(--brand-indigo);
+    flex-shrink: 0;
+}
+
+.logo-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo-text-primary {
+    color: var(--brand-indigo);
+    font-size: 1.75rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.logo-text-secondary {
+    color: var(--brand-indigo);
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    line-height: 1;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+    margin-right: auto;
+    /* Push any right-side elements (like CTA) away */
+}
+
+.nav-links a {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #000000;
+    /* Font is now explicitly black */
+    position: relative;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+    color: var(--brand-indigo);
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--brand-gold);
+    transition: width var(--transition-base);
+}
+
+.nav-links a.active::after,
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* ==========================================================================
+   Hero Section
+   ========================================================================== */
+.hero {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    padding-top: 140px;
+    z-index: 10;
+}
+
+.hero-content {
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left !important;
+    margin: 0;
+    /* Remove auto margins to flush left */
+}
+
+/* Ensure child elements don't auto-center */
+.hero-content>* {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background: rgba(46, 26, 71, 0.05);
+    border: 1px solid var(--border-color);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--brand-indigo);
+    margin-bottom: 2rem;
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 4.5vw, 4rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    max-width: 650px;
+    margin-bottom: 3rem;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* ==========================================================================
+   Base Shared Grid Elements
+   ========================================================================== */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.content-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    /* Professional sharp corners */
+    padding: 3rem 2.5rem;
+    transition: all var(--transition-base);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px -10px rgba(46, 26, 71, 0.15);
+    border-color: rgba(46, 26, 71, 0.2);
+}
+
+.card-icon-svg {
+    width: 32px;
+    height: 32px;
+    fill: none;
+    stroke: var(--brand-gold);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   Page Wrappers 
+   ========================================================================== */
+.page-wrapper {
+    padding-top: 120px;
+    min-height: 60vh;
+    padding-bottom: var(--section-padding);
+}
+
+.page-header {
+    margin-bottom: 4rem;
+}
+
+/* Animations */
+.fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   Institutional / Editorial Layouts (Bank Aesthetic)
+   ========================================================================== */
+.institutional-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 2px solid var(--brand-indigo);
+    border-bottom: 2px solid var(--brand-indigo);
+    margin-top: 2rem;
+    margin-bottom: 6rem;
+}
+
+.institutional-card {
+    padding: 3.5rem 2.5rem;
+    border-right: 1px solid rgba(10, 25, 47, 0.15);
+    /* very faint indigo border */
+    display: flex;
+    flex-direction: column;
+}
+
+.institutional-card:last-child {
+    border-right: none;
+}
+
+.institutional-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+    color: var(--brand-indigo);
+}
+
+.institutional-card p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.editorial-section {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+.editorial-row {
+    display: flex;
+    border-top: 1px solid rgba(10, 25, 47, 0.15);
+    padding: 4rem 0;
+    align-items: flex-start;
+    gap: 4rem;
+}
+
+.editorial-row:last-child {
+    border-bottom: 1px solid rgba(10, 25, 47, 0.15);
+}
+
+.editorial-col-title {
+    flex: 0 0 35%;
+}
+
+.editorial-col-title h3 {
+    font-family: var(--font-heading);
+    font-size: 2.25rem;
+    font-weight: 300;
+    color: var(--brand-indigo);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.editorial-col-title .editorial-num {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--brand-gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.editorial-col-content {
+    flex: 1;
+}
+
+.editorial-col-content p {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin: 0;
+    font-weight: 400;
+}
+
+.editorial-row-reverse {
+    flex-direction: row-reverse;
+}
+
+.editorial-col-content {
+    position: relative;
+    z-index: 1;
+}
+
+.editorial-watermark {
+    position: absolute;
+    top: -4rem;
+    left: -2rem;
+    font-size: 14rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    color: rgba(10, 25, 47, 0.03);
+    /* barely visible massive numbers behind text */
+    z-index: -1;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+}
+
+.strategy-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+}
+
+.strategy-tags span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--brand-indigo);
+    background: rgba(10, 25, 47, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Impact / Metrics Section (Eye-Popping)
+   ========================================================================== */
+.impact-section {
+    background: linear-gradient(135deg, var(--brand-indigo) 0%, var(--brand-indigo-light) 100%);
+    padding: 8rem 0;
+    margin-top: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.impact-header {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.impact-header h2 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+.impact-header p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.impact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4rem;
+    text-align: center;
+}
+
+.impact-stat {
+    position: relative;
+    padding: 2rem;
+}
+
+.impact-value {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.impact-value .stat-accent {
+    font-size: 3rem;
+    color: var(--brand-gold);
+    margin-top: 0.5rem;
+    margin-left: 0.25rem;
+}
+
+.impact-label {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.impact-bar {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: var(--brand-gold);
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.impact-stat.visible .impact-bar {
+    width: 60px;
+}
+
+/* ==========================================================================
+   Fund Page Specific
+   ========================================================================== */
+.fund-header-container {
+    padding-bottom: 0;
+    margin-bottom: 2rem;
+}
+
+.division-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    margin-top: 4rem;
+    margin-bottom: 6rem;
+}
+
+.division-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 3.5rem;
+    position: relative;
+}
+
+.division-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--brand-indigo);
+}
+
+.division-card-quant::before {
+    background: var(--brand-gold);
+}
+
+.division-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.division-header h3 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--brand-indigo);
+    margin: 0;
+}
+
+.division-header .div-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.division-card p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+.division-tags {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.division-tags span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    background: rgba(10, 25, 47, 0.05);
+    color: var(--brand-indigo);
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   Fund Page - Performance & Process
+   ========================================================================== */
+.chart-wrapper {
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    margin: 3rem 0;
+}
+
+.chart-container {
+    position: relative;
+    height: 50vh;
+    width: 100%;
+}
+
+.chart-legend-custom {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.legend-color.fundamental-color {
+    background: var(--brand-indigo);
+}
+
+.legend-color.quant-color {
+    background: #3b82f6;
+}
+
+/* A crisp secondary blue */
+.legend-color.sp500-color {
+    background: var(--brand-gold);
+}
+
+.timeline-container {
+    position: relative;
+    max-width: 900px;
+    margin: 0 0 6rem 0;
+}
+
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 23px;
+    /* centered on 48px marker, 24-1=23 */
+    width: 2px;
+    background-color: var(--brand-indigo);
+    opacity: 0.15;
+}
+
+.timeline-step {
+    position: relative;
+    margin-bottom: 4rem;
+    padding-left: 80px;
+}
+
+.timeline-step:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--brand-indigo);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    z-index: 2;
+    box-shadow: 0 0 0 8px var(--bg-main);
+}
+
+.timeline-content h3 {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    color: var(--brand-indigo);
+    margin-bottom: 1rem;
+    margin-top: 0.35rem;
+    /* align with marker vertically */
+}
+
+.timeline-content p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+
+    .nav-links,
+    .nav-cta {
+        display: none;
+        /* In production, add a hamburger menu */
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .footer-content {
+        flex-direction: column;
+    }
+
+    .institutional-grid {
+        grid-template-columns: 1fr;
+        border-bottom: none;
+        margin-bottom: 3rem;
+    }
+
+    .institutional-card {
+        border-right: none;
+        border-bottom: 1px solid rgba(10, 25, 47, 0.15);
+        padding: 2.5rem 0;
+    }
+
+    .institutional-card:last-child {
+        border-bottom: 2px solid var(--brand-indigo);
+    }
+
+    .editorial-row {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 3rem 0;
+    }
+
+    .editorial-col-title {
+        flex: none;
+        width: 100%;
+    }
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.footer {
+    background-color: var(--brand-indigo);
+    border-top: none;
+    padding: 5rem 5% 2rem;
+    margin-top: 6rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 4rem;
+    margin-bottom: 4rem;
+    max-width: var(--container-width);
+    margin: 0 auto 4rem auto;
+}
+
+.footer-logo-col {
+    flex: 0 0 350px;
+}
+
+.footer-logo-col p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.2rem;
+    font-size: 0.95rem;
+}
+
+.footer-logo-col p a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color var(--transition-base);
+}
+
+.footer-logo-col p a:hover {
+    color: var(--brand-gold);
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    font-family: var(--font-heading);
+    color: #ffffff;
+    margin-top: -16px;
+    /* Shifted up further to bottom-align with adjacent h4 text */
+    margin-bottom: 2rem;
+    text-decoration: none;
+}
+
+.footer-logo img {
+    height: 48px;
+    width: auto;
+}
+
+.footer-logo .logo-text-primary,
+.footer-logo .logo-text-secondary {
+    color: #ffffff !important;
+}
+
+.footer-links-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.footer-col {
+    flex: 1;
+    min-width: 150px;
+}
+
+.footer-col h4 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.footer-col a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color var(--transition-base);
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.footer-col a:hover {
+    color: var(--brand-gold);
+    text-decoration: underline;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+}
+
+.footer-col .footer-socials a {
+    display: inline-flex;
+    margin-bottom: 0;
+    transition: all var(--transition-base);
+}
+
+.footer-col .footer-socials a:hover {
+    text-decoration: none;
+    transform: translateY(-3px);
+    color: #ffffff;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: var(--container-width);
+    margin: 0 auto;
+}
+
+.footer-legal-links {
+    display: flex;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+}
+
+.footer-legal-links a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color var(--transition-base);
+}
+
+.footer-legal-links a:hover {
+    color: var(--brand-gold);
+}
+
+.footer-copy {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+}

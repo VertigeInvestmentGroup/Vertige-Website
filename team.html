@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Team | Vertige Investment Group</title>
+    <link rel="icon" type="image/png" href="Gemini_Generated_Image_ix8rw5ix8rw5ix8r.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .team-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(46, 26, 71, 0.15);
+            border-color: rgba(46, 26, 71, 0.2);
+        }
+
+        .team-avatar {
+            width: 100%;
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            background-color: var(--brand-indigo-light);
+            background-image: linear-gradient(to bottom, transparent, rgba(46, 26, 71, 0.1));
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .team-info {
+            padding: 1.5rem;
+        }
+
+        .team-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+            color: var(--brand-indigo);
+        }
+
+        .team-role {
+            color: #718096;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .team-exp {
+            color: var(--brand-indigo);
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Modal Styles */
+        .team-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(10, 25, 47, 0.8);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .team-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+        }
+
+        .team-modal-content {
+            background-color: var(--bg-main);
+            margin: auto;
+            padding: 3rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .team-modal.show .team-modal-content {
+            transform: translateY(0);
+        }
+
+        .team-modal-close {
+            color: var(--text-muted);
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .team-modal-close:hover,
+        .team-modal-close:focus {
+            color: var(--brand-indigo);
+            text-decoration: none;
+        }
+
+        .team-modal-body {
+            display: flex;
+            gap: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            .team-modal-body {
+                flex-direction: column;
+            }
+        }
+
+        .team-modal-avatar {
+            width: 200px;
+            height: 200px;
+            flex-shrink: 0;
+            background-color: var(--brand-indigo-light);
+            border-radius: 8px;
+            background-image: linear-gradient(to bottom, transparent, rgba(46, 26, 71, 0.1));
+        }
+
+        .team-modal-info h2 {
+            font-family: var(--font-heading);
+            color: var(--brand-indigo);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .team-modal-info .team-role {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-modal-info .team-exp {
+            border: none;
+            padding-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .team-bio {
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="antigravity-bg">
+        <div class="ag-moving-visual"></div>
+        <div class="ag-layer layer-2"></div> <!-- Particles -->
+    </div>
+
+    <nav id="navbar" class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo_transparent.png" alt="Vertige Logo" class="logo-img">
+                <div class="logo-text-wrapper">
+                    <span class="logo-text-primary">Vertige</span>
+                    <span class="logo-text-secondary">Investment Group</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="fund.html">The Fund</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="team.html" class="active">Team</a></li>
+            </ul>
+            <a href="join.html" class="btn btn-primary nav-cta">Join Vertige</a>
+        </div>
+    </nav>
+
+
+    <main class="page-wrapper container">
+        <div class="page-header fade-up" style="margin-bottom: 5rem;">
+            <h1 class="hero-title">Our Team</h1>
+            <p class="hero-subtitle">Our fund is governed and managed by dedicated University of Toronto students with
+                rigorous training and experience across top-tier investment banks and buyside firms.</p>
+        </div>
+
+        <!-- Executive Committee Section -->
+        <div class="team-section fade-up" style="margin-bottom: 4rem;">
+            <h2 class="hero-title"
+                style="font-size: 2.25rem; margin-bottom: 2.5rem; border-bottom: 2px solid var(--brand-indigo); padding-bottom: 0.75rem; display: inline-block;">
+                Executive Committee</h2>
+            <div class="team-grid">
+
+                <div class="team-card"
+                    data-bio="James Harrington is a dedicated President with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>James Harrington</h3>
+                        <p class="team-role">President</p>
+                        <p class="team-exp">Incoming Analyst, Goldman Sachs</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Evelyn Chen is a dedicated Vice President with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Evelyn Chen</h3>
+                        <p class="team-role">Vice President</p>
+                        <p class="team-exp">Incoming Quant, Citadel</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Marcus Riad is a dedicated Head of Research with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Marcus Riad</h3>
+                        <p class="team-role">Head of Research</p>
+                        <p class="team-exp">Incoming Analyst, Morgan Stanley</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Sarah Jenkins is a dedicated Head of Macro with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Sarah Jenkins</h3>
+                        <p class="team-role">Head of Macro</p>
+                        <p class="team-exp">Incoming Analyst, Blackstone</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Michael Torres is a dedicated Head of Risk with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Michael Torres</h3>
+                        <p class="team-role">Head of Risk</p>
+                        <p class="team-exp">Incoming Analyst, J.P. Morgan</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Managing Directors Section -->
+        <div class="team-section fade-up" style="margin-bottom: 4rem;">
+            <h2 class="hero-title"
+                style="font-size: 2.25rem; margin-bottom: 2.5rem; border-bottom: 2px solid var(--brand-indigo); padding-bottom: 0.75rem; display: inline-block;">
+                Managing Directors</h2>
+            <div class="team-grid">
+
+                <div class="team-card"
+                    data-bio="Alex Cho is a dedicated Managing Director - Healthcare with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Alex Cho</h3>
+                        <p class="team-role">Managing Director - Healthcare</p>
+                        <p class="team-exp">Summer Analyst, Lazard</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Olivia Bennett is a dedicated Managing Director - TMT with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Olivia Bennett</h3>
+                        <p class="team-role">Managing Director - TMT</p>
+                        <p class="team-exp">Summer Analyst, Evercore</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Daniel Kim is a dedicated Managing Director - Quant Strategy with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Daniel Kim</h3>
+                        <p class="team-role">Managing Director - Quant Strategy</p>
+                        <p class="team-exp">Summer Quant, Two Sigma</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Sophia Martinez is a dedicated Managing Director - Consumer with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Sophia Martinez</h3>
+                        <p class="team-role">Managing Director - Consumer</p>
+                        <p class="team-exp">Summer Analyst, Moelis & Co.</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="William Davies is a dedicated Managing Director - Industrials with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>William Davies</h3>
+                        <p class="team-role">Managing Director - Industrials</p>
+                        <p class="team-exp">Summer Analyst, Bank of America</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Emma Wilson is a dedicated Managing Director - FIG with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Emma Wilson</h3>
+                        <p class="team-role">Managing Director - FIG</p>
+                        <p class="team-exp">Summer Analyst, Citi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysts Section -->
+        <div class="team-section fade-up" style="margin-bottom: 6rem;">
+            <h2 class="hero-title"
+                style="font-size: 2.25rem; margin-bottom: 2.5rem; border-bottom: 2px solid var(--brand-indigo); padding-bottom: 0.75rem; display: inline-block;">
+                Analysts</h2>
+            <div class="team-grid">
+
+                <div class="team-card"
+                    data-bio="Analyst Name 1 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 1</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 2 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 2</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 3 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 3</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 4 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 4</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 5 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 5</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 6 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 6</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 7 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 7</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 8 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 8</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 9 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 9</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 10 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 10</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 11 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 11</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 12 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 12</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 13 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 13</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 14 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 14</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+                <div class="team-card"
+                    data-bio="Analyst Name 15 is a dedicated Investment Analyst with a strong background in analytical problem solving. They joined the fund to apply their academic knowledge to real-world capital allocation strategies.">
+                    <div class="team-avatar"></div>
+                    <div class="team-info">
+                        <h3>Analyst Name 15</h3>
+                        <p class="team-role">Investment Analyst</p>
+                        <p class="team-exp">Incoming Summer Analyst</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="teamModal" class="team-modal">
+        <div class="team-modal-content">
+            <span class="team-modal-close">&times;</span>
+            <div class="team-modal-body">
+                <div class="team-modal-avatar"></div>
+                <div class="team-modal-info">
+                    <h2 id="modalName">Name</h2>
+                    <p id="modalRole" class="team-role">Role</p>
+                    <p id="modalExp" class="team-exp">Experience</p>
+                    <p id="modalBio" class="team-bio">Biography goes here...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo-col">
+                <a href="index.html" class="footer-logo">
+                    <img src="logo_white_transparent.png" alt="Vertige Logo">
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text-primary">Vertige</span>
+                        <span class="logo-text-secondary">Investment Group</span>
+                    </div>
+                </a>
+            </div>
+            <div class="footer-links-wrapper">
+                <div class="footer-col">
+                    <h4>Our Firm</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="team.html">Leadership</a>
+                    <a href="#">Contact</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Insights</h4>
+                    <a href="portfolio.html">Research & Performance</a>
+                    <a href="#">Market Updates</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Careers</h4>
+                    <a href="join.html">Recruiting</a>
+                    <a href="#">Analyst Training</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <div class="footer-socials">
+                        <a href="https://ca.linkedin.com/company/vertige-investment-group" target="_blank"
+                            rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor" fill-rule="evenodd"
+                                    d="M3.86 8.926h3.341V20.57h-3.34zm1.586-1.457H5.42c-1.21 0-1.993-.89-1.993-2.017 0-1.15.807-2.023 2.04-2.023s1.991.87 2.016 2.02c0 1.127-.783 2.02-2.038 2.02M20.57 20.571h-3.79v-6.027c0-1.577-.592-2.653-1.895-2.653-.997 0-1.551.726-1.81 1.427-.096.25-.081.6-.081.952v6.301H9.241s.049-10.675 0-11.645h3.754v1.827c.222-.799 1.421-1.94 3.335-1.94 2.375 0 4.24 1.677 4.24 5.282z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/vertigeca" target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor"
+                                    d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6">
+                                </path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-legal-links">
+                <a href="#">Privacy and Security</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Regulatory Disclosures</a>
+                <a href="#">Site Map</a>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 Vertige Investment Group. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
