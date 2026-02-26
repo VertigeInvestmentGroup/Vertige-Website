@@ -507,20 +507,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         const span = document.getElementsByClassName('team-modal-close')[0];
         const nameEl = document.getElementById('modalName');
         const roleEl = document.getElementById('modalRole');
-        const expEl = document.getElementById('modalExp');
         const bioEl = document.getElementById('modalBio');
 
         document.querySelectorAll('.team-card').forEach(card => {
             card.addEventListener('click', () => {
                 const name = card.querySelector('h3').innerText;
                 const role = card.querySelector('.team-role').innerText;
-                const exp = card.querySelector('.team-exp').innerText;
-                const bio = card.getAttribute('data-bio') || 'Biography coming soon. Stay tuned for more information about their experience and contributions to the fund.';
 
                 nameEl.innerText = name;
                 roleEl.innerText = role;
-                expEl.innerText = exp;
-                bioEl.innerText = bio;
+
+                if (bioEl) {
+                    bioEl.style.display = 'none';
+                }
 
                 teamModal.style.display = 'flex';
                 // Trigger reflow
