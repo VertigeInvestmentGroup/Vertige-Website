@@ -389,7 +389,7 @@ h6 {
     padding-top: 140px;
     z-index: 10;
     /* Mountain background */
-    background-image: url('hero_mountains.png');
+    background-image: url('assets/hero_unsplash.jpg');
     background-size: cover;
     background-position: center 40%;
     background-repeat: no-repeat;
