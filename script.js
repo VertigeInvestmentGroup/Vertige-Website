@@ -61,12 +61,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- Navbar Hide on Scroll Down ---
     const navbar = document.getElementById("navbar");
     let lastScrollY = window.scrollY;
+    const isHomePage = document.querySelector('.hero') !== null;
+
+    if (!isHomePage && navbar && !navbar.classList.contains("scrolled")) {
+        navbar.classList.add("scrolled");
+    }
 
     window.addEventListener("scroll", () => {
         const currentScrollY = window.scrollY;
 
-        // Add frosted glass when not at top
-        if (currentScrollY > 50) {
+        // Add frosted glass when not at top or if we're not on the homepage
+        if (currentScrollY > 50 || !isHomePage) {
             navbar.classList.add("scrolled");
         } else {
             navbar.classList.remove("scrolled");
@@ -758,5 +763,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         requestAnimationFrame(animate);
+    }
+
+    // --- Hamburger Mobile Menu ---
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.contains('open');
+            if (isOpen) {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                document.body.style.overflow = '';
+            } else {
+                mobileMenu.classList.add('open');
+                hamburger.classList.add('open');
+                document.body.style.overflow = 'hidden'; // Prevent scroll behind overlay
+            }
+        });
+
+        // Close menu when a link is clicked
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Close menu on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        });
     }
 });

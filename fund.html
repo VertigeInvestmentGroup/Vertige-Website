@@ -5,21 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Fund | Vertige Investment Group</title>
-    <link rel="icon" type="image/png" href="Gemini_Generated_Image_ix8rw5ix8rw5ix8r.png">
+    <link rel="icon" type="image/png" href="logo_transparent.png">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300;400;500;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=4">
+    <link rel="stylesheet" href="styles.css?v=1772521765">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
     <!-- Navigation -->
-    <nav id="navbar" class="navbar">
+    <nav id="navbar" class="navbar scrolled">
         <div class="nav-container">
             <a href="index.html" class="logo">
                 <img src="logo_transparent.png" alt="Vertige Logo" class="logo-img">
@@ -30,13 +30,23 @@
             </a>
             <ul class="nav-links">
                 <li><a href="about.html">About Us</a></li>
-                <li><a href="fund.html" class="active">The Fund</a></li>
-                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="research.html">Research</a></li>
                 <li><a href="team.html">Team</a></li>
             </ul>
             <a href="join.html" class="btn btn-primary nav-cta">Join Vertige</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="about.html">About Us</a>
+        <a href="research.html">Research</a>
+        <a href="team.html">Team</a>
+        <a href="join.html" class="mobile-cta">Join Vertige</a>
+    </div>
 
     <!-- Main Content -->
     <main class="page-wrapper">
@@ -222,13 +232,12 @@
                 <div class="footer-col">
                     <h4>Our Firm</h4>
                     <a href="about.html">About Us</a>
-                    <a href="fund.html">The Fund</a>
                     <a href="team.html">Leadership</a>
                 </div>
                 <div class="footer-col">
                     <h4>Insights</h4>
-                    <a href="portfolio.html">Research & Performance</a>
-                    <a href="#">Market Updates</a>
+                    <a href="research.html">Research</a>
+                    <a href="https://www.linkedin.com/newsletters/7212272308051193857/" target="_blank">MarketPulse</a>
                 </div>
                 <div class="footer-col">
                     <h4>Careers</h4>
@@ -269,7 +278,7 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=1772521765"></script>
 </body>
 
 </html>

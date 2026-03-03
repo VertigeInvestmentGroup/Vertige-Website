@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vertige Investment Group | University of Toronto</title>
-    <link rel="icon" type="image/png" href="Gemini_Generated_Image_ix8rw5ix8rw5ix8r.png">
+    <link rel="icon" type="image/png" href="logo_transparent.png">
     <meta name="description"
         content="Premier student-run investment fund at the University of Toronto focusing on rigorous research and consistent alpha generation.">
 
@@ -16,19 +16,14 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300;400;500;600&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1772521766">
 </head>
 
-<body>
+<body class="home-page">
 
-    <!-- Antigravity Background Engine -->
-    <div id="antigravity-bg">
-        <div class="ag-moving-visual"></div>
-        <div class="ag-layer layer-2"></div> <!-- Particles -->
-    </div>
 
     <!-- Navigation -->
-    <nav id="navbar" class="navbar">
+    <nav id="navbar" class="navbar navbar-home">
         <div class="nav-container">
             <a href="index.html" class="logo">
                 <img src="logo_transparent.png" alt="Vertige Logo" class="logo-img">
@@ -39,13 +34,23 @@
             </a>
             <ul class="nav-links">
                 <li><a href="about.html">About Us</a></li>
-                <li><a href="fund.html">The Fund</a></li>
-                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="research.html">Research</a></li>
                 <li><a href="team.html">Team</a></li>
             </ul>
             <a href="join.html" class="btn btn-primary nav-cta">Join Vertige</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="about.html">About Us</a>
+        <a href="research.html">Research</a>
+        <a href="team.html">Team</a>
+        <a href="join.html" class="mobile-cta">Join Vertige</a>
+    </div>
 
     <!-- Home Hero Section - General Overview -->
     <header class="hero">
@@ -55,19 +60,52 @@
             </h1>
             <p class="hero-subtitle">
                 We are a student investment club at the University of Toronto publishing industry-grade
-                equity market insights. We combine traditional analysis with innovative strategies to bridge the gap
+                equity market insights. We combine traditional analysis with innovative quantitative strategies to
+                bridge the gap
                 between today and tomorrow.
             </p>
             <div class="hero-actions">
-                <a href="portfolio.html" class="btn btn-primary btn-lg">Explore Performance</a>
+                <a href="research.html" class="btn btn-primary btn-lg">Explore Research</a>
             </div>
         </div>
     </header>
 
-    <!-- Spacer to enable scrolling for the navbar disappearing effect -->
-    <div style="height: 100vh; display: flex; align-items: center; justify-content: center; margin-top: 4rem;">
-        <p class="text-muted">Scroll down to see the navigation bar disappear, and scroll up to reveal it.</p>
-    </div>
+    <!-- Sphere Section (scrolls with page) -->
+    <section class="sphere-section">
+        <div class="container fade-up"
+            style="position: relative; z-index: 2; display: flex; align-items: center; height: 100%;">
+            <div class="sphere-content" style="max-width: 500px;">
+                <h2 class="hero-title" style="color: var(--brand-indigo); font-size: 2.25rem; margin-bottom: 1rem;">
+                    Philosophy</h2>
+                <p class="hero-subtitle"
+                    style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem;">
+                    At the Vertige Investment Group, we fundamentally believe that with a capable and carefully selected
+                    team, prosperity is a guarantee. Our core philosophy emphasizes a strong desire to learn, a true
+                    sense of dedication, and a meticulous attention to detail as the most important attributes an
+                    individual can have. As a result, our candidate selection process doesn't judge based on current
+                    knowledge, past experiences, or field of study - rather, our focus is placed on a prospective team
+                    member's raw potential, with the assurance that skills can always be obtained as long as the
+                    individual is willing to learn them.
+                </p>
+
+                <h2 class="hero-title"
+                    style="color: var(--brand-indigo); font-size: 2.25rem; margin-bottom: 1rem; margin-top: 1rem;">
+                    Our Story</h2>
+                <p class="hero-subtitle"
+                    style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; margin-bottom: 0;">
+                    Founded in 2024, the Vertige Investment Group (VIG) is a student led organization at the University
+                    of Toronto focused on training passionate and dedicated students to perform industry-grade financial
+                    analysis and equity research. Our mission is to cultivate a premier platform for undergraduate
+                    students to immerse themselves in the world of investment management, where cutting-edge approaches
+                    give way to exceptional growth.
+                </p>
+            </div>
+        </div>
+        <div id="antigravity-bg">
+            <div class="ag-moving-visual"></div>
+            <div class="ag-layer layer-2"></div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -86,12 +124,12 @@
                     <h4>Our Firm</h4>
                     <a href="about.html">About Us</a>
                     <a href="team.html">Leadership</a>
-                    <a href="#">Contact</a>
+                    <a href="contact.html">Contact</a>
                 </div>
                 <div class="footer-col">
                     <h4>Insights</h4>
-                    <a href="portfolio.html">Research & Performance</a>
-                    <a href="#">Market Updates</a>
+                    <a href="research.html">Research</a>
+                    <a href="https://www.linkedin.com/newsletters/7212272308051193857/" target="_blank">MarketPulse</a>
                 </div>
                 <div class="footer-col">
                     <h4>Careers</h4>
@@ -132,7 +170,7 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=1772521766"></script>
 </body>
 
 </html>

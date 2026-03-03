@@ -90,17 +90,34 @@ body {
    Antigravity Background Engine
    ========================================================================== */
 #antigravity-bg {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
     overflow: hidden;
     pointer-events: none;
-    background-color: var(--bg-main);
+    background-color: transparent;
     box-shadow: none !important;
-    /* Force off any inherited or implicit edge shadow */
+    clip-path: inset(0 0 0 0);
+    /* PREVENTS SPILLOVER */
+}
+
+/* Inner pages have fixed backgrounds to prevent canvas stretching */
+body:not(.home-page) #antigravity-bg {
+    position: fixed;
+    height: 100vh;
+    z-index: 0;
+}
+
+/* Make page headers dark natively on light mode static pages */
+body:not(.home-page) .hero-title {
+    color: var(--brand-indigo) !important;
+}
+
+body:not(.home-page) .hero-subtitle {
+    color: var(--text-color) !important;
 }
 
 /* ==========================================================================
@@ -200,18 +217,46 @@ h6 {
     left: 0;
     width: 100%;
     z-index: 1000;
-    /* padding: 1.25rem 5%; REMOVED THIS to let the container inner handle horizontal padding so it precisely matches hero-content */
     padding-top: 1.25rem;
     padding-bottom: 1.25rem;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
-    background: transparent;
-}
-
-.navbar.scrolled {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, backdrop-filter 0.3s ease;
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--glass-border);
+}
+
+.navbar.navbar-home:not(.scrolled) {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: none;
+}
+
+/* Nav CTA: solid dark by default, white outlined on homepage hero */
+.navbar .nav-cta {
+    background: var(--brand-indigo);
+    color: #ffffff;
+    border-color: transparent;
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.navbar .nav-cta:hover {
+    background: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar.navbar-home:not(.scrolled) .nav-cta {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: none;
+}
+
+.navbar.navbar-home:not(.scrolled) .nav-cta:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff;
 }
 
 /* Class to hide navbar */
@@ -246,6 +291,11 @@ h6 {
     object-fit: contain;
 }
 
+/* Make logo white on homepage before scrolling to match white text */
+.navbar.navbar-home:not(.scrolled) .logo-img {
+    filter: brightness(0) invert(1);
+}
+
 .logo-text-wrapper {
     display: flex;
     flex-direction: column;
@@ -259,6 +309,11 @@ h6 {
     letter-spacing: 0.15em;
     line-height: 1;
     text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.navbar.navbar-home:not(.scrolled) .logo-text-primary {
+    color: #ffffff;
 }
 
 .logo-text-secondary {
@@ -269,6 +324,11 @@ h6 {
     line-height: 1;
     text-transform: uppercase;
     margin-top: 0.25rem;
+    transition: color 0.3s ease;
+}
+
+.navbar.navbar-home:not(.scrolled) .logo-text-secondary {
+    color: rgba(255, 255, 255, 0.75);
 }
 
 .nav-links {
@@ -283,13 +343,22 @@ h6 {
     font-size: 0.95rem;
     font-weight: 500;
     color: #000000;
-    /* Font is now explicitly black */
     position: relative;
+    transition: color 0.3s ease;
+}
+
+.navbar.navbar-home:not(.scrolled) .nav-links a {
+    color: #ffffff;
 }
 
 .nav-links a.active,
 .nav-links a:hover {
     color: var(--brand-indigo);
+}
+
+.navbar.navbar-home:not(.scrolled) .nav-links a.active,
+.navbar.navbar-home:not(.scrolled) .nav-links a:hover {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .nav-links a::after {
@@ -312,13 +381,31 @@ h6 {
    Hero Section
    ========================================================================== */
 .hero {
-    min-height: 90vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     position: relative;
     padding-top: 140px;
     z-index: 10;
+    /* Mountain background */
+    background-image: url('assets/hero_unsplash.jpg');
+    background-size: cover;
+    background-position: center 40%;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+/* Dark gradient overlay so text stays readable */
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+            rgba(5, 15, 30, 0.55) 0%,
+            rgba(5, 15, 30, 0.40) 60%,
+            rgba(5, 15, 30, 0.70) 100%);
+    z-index: 0;
 }
 
 .hero-content {
@@ -328,7 +415,8 @@ h6 {
     align-items: flex-start;
     text-align: left !important;
     margin: 0;
-    /* Remove auto margins to flush left */
+    position: relative;
+    z-index: 2;
 }
 
 /* Ensure child elements don't auto-center */
@@ -341,12 +429,13 @@ h6 {
     display: inline-block;
     padding: 0.5rem 1rem;
     border-radius: 4px;
-    background: rgba(46, 26, 71, 0.05);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--brand-indigo);
+    color: rgba(255, 255, 255, 0.9);
     margin-bottom: 2rem;
+    backdrop-filter: blur(4px);
 }
 
 .hero-title {
@@ -354,11 +443,12 @@ h6 {
     letter-spacing: -0.02em;
     margin-bottom: 1.5rem;
     line-height: 1.1;
+    color: #ffffff;
 }
 
 .hero-subtitle {
     font-size: 1.25rem;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.80);
     max-width: 650px;
     margin-bottom: 3rem;
 }
@@ -366,6 +456,25 @@ h6 {
 .hero-actions {
     display: flex;
     gap: 1rem;
+}
+
+.hero-actions .btn-primary {
+    background: #ffffff;
+    color: var(--brand-indigo);
+}
+
+.hero-actions .btn-primary:hover {
+    background: #f0f0f0;
+    color: var(--brand-indigo);
+}
+
+/* Sphere section — scrolls with the page below the hero */
+.sphere-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-main);
 }
 
 /* ==========================================================================
@@ -848,22 +957,140 @@ h6 {
 }
 
 /* ==========================================================================
+   Hamburger Menu
+   ========================================================================== */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    margin-left: auto;
+    background: none;
+    border: none;
+    padding: 0;
+    z-index: 1100;
+}
+
+.hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--brand-indigo);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.hamburger.open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.hamburger.open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile nav drawer */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 1050;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-menu.open {
+    display: flex;
+    opacity: 1;
+    pointer-events: all;
+}
+
+.mobile-menu a {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--brand-indigo);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.mobile-menu a:hover {
+    color: var(--brand-gold);
+}
+
+.mobile-menu .mobile-cta {
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.85rem 2rem;
+    background: var(--brand-indigo);
+    color: white !important;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
    Responsive
    ========================================================================== */
 @media (max-width: 768px) {
 
+    /* — Navbar — */
     .nav-links,
     .nav-cta {
         display: none;
-        /* In production, add a hamburger menu */
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    /* — Hero — */
+    .hero {
+        padding-top: 100px;
+        min-height: 80vh;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 8vw, 3rem);
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
     }
 
     .hero-actions {
         flex-direction: column;
+        width: 100%;
     }
 
-    .footer-content {
-        flex-direction: column;
+    .hero-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* — Grids — */
+    .content-grid {
+        grid-template-columns: 1fr;
     }
 
     .institutional-grid {
@@ -882,6 +1109,26 @@ h6 {
         border-bottom: 2px solid var(--brand-indigo);
     }
 
+    .division-card-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .division-card {
+        padding: 2rem;
+    }
+
+    .impact-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .impact-value {
+        font-size: 3.5rem;
+    }
+
+    /* — Editorial — */
     .editorial-row {
         flex-direction: column;
         gap: 1.5rem;
@@ -892,12 +1139,49 @@ h6 {
         flex: none;
         width: 100%;
     }
+
+    .editorial-col-title h3 {
+        font-size: 1.75rem;
+    }
+
+    .editorial-watermark {
+        display: none;
+    }
+
+    /* — Footer — */
+    .footer-content {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .footer-logo-col {
+        flex: none;
+        width: 100%;
+    }
+
+    .footer-links-wrapper {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    /* — Page wrapper — */
+    .page-wrapper {
+        padding-top: 90px;
+    }
 }
 
 /* ==========================================================================
    Footer
    ========================================================================== */
 .footer {
+    position: relative;
+    z-index: 10;
     background-color: var(--brand-indigo);
     border-top: none;
     padding: 5rem 5% 2rem;
@@ -1043,4 +1327,20 @@ h6 {
 .footer-copy {
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.85rem;
+}
+
+/* User Request: Hide Join Vertige buttons temporarily */
+.nav-cta,
+.mobile-cta {
+    display: none !important;
+}
+
+/* User Request: Hide Careers footer column temporarily (3rd column) */
+.footer-links-wrapper .footer-col:nth-child(3) {
+    display: none !important;
+}
+
+/* User Request: Hide Portfolio page temporarily */
+a[href="portfolio.html"] {
+    display: none !important;
 }

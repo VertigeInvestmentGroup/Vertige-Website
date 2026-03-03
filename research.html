@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research | Vertige Investment Group</title>
+    <link rel="icon" type="image/png" href="logo_transparent.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=1772521766">
+    <style>
+        .research-container {
+            padding: 6rem 0;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .research-header {
+            margin-bottom: 3.5rem;
+            text-align: center;
+        }
+
+        .research-header h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: var(--text-color);
+            margin-bottom: 2.5rem;
+            font-family: var(--font-heading);
+        }
+
+        /* --- Search Bar --- */
+        .research-search-wrapper {
+            position: relative;
+            max-width: 560px;
+            margin: 0 auto 2rem;
+        }
+
+        .research-search-wrapper svg {
+            position: absolute;
+            left: 1.1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+        }
+
+        #research-search {
+            width: 100%;
+            padding: 0.85rem 1.2rem 0.85rem 3rem;
+            border: 1px solid #d1d5db;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            color: #1f2937;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+
+        #research-search:focus {
+            outline: none;
+            border-color: #4a75a6;
+            box-shadow: 0 0 0 3px rgba(74, 117, 166, 0.12);
+        }
+
+        /* --- Filter Pills --- */
+        .research-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .filter-pill {
+            padding: 0.4rem 1.1rem;
+            border-radius: 50px;
+            border: 1px solid #d1d5db;
+            background: transparent;
+            font-size: 0.85rem;
+            font-family: var(--font-body);
+            color: #1f2937;
+            cursor: pointer;
+            transition: background 0.18s, border-color 0.18s, color 0.18s;
+        }
+
+        .filter-pill:hover {
+            border-color: #4a75a6;
+            color: #4a75a6;
+        }
+
+        .filter-pill.active {
+            background: #0a192f;
+            border-color: #0a192f;
+            color: #ffffff;
+        }
+
+        /* --- Sort Dropdown --- */
+        .research-sort-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-top: 1.2rem;
+        }
+
+        .research-sort-wrapper label {
+            font-size: 0.85rem;
+            color: #4b5563;
+            font-family: var(--font-body);
+            white-space: nowrap;
+        }
+
+        #research-sort {
+            appearance: none;
+            -webkit-appearance: none;
+            padding: 0.4rem 2.2rem 0.4rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-family: var(--font-body);
+            color: #1f2937;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #research-sort:focus {
+            outline: none;
+            border-color: #4a75a6;
+            box-shadow: 0 0 0 3px rgba(74, 117, 166, 0.12);
+        }
+
+        /* --- No Results --- */
+        .research-no-results {
+            display: none;
+            text-align: center;
+            padding: 4rem 0;
+            color: #4b5563;
+            font-size: 1.05rem;
+        }
+
+        .research-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .research-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .research-item:first-child {
+            border-top: 1px solid var(--border-color);
+        }
+
+        .research-item:last-child {
+            border-bottom: none;
+        }
+
+        .research-content {
+            flex: 1;
+            padding-right: 4rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .research-date {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .research-title {
+            font-size: 1.65rem;
+            font-weight: 300;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+            font-family: var(--font-heading);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .research-category {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .research-link {
+            display: inline-flex;
+            align-items: center;
+            color: #4a75a6;
+            /* A classic corporate blue link */
+            font-weight: 400;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            font-size: 1.05rem;
+            margin-top: auto;
+        }
+
+        .research-link:hover {
+            color: #2b5078;
+        }
+
+        .research-image-wrapper {
+            width: 450px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .research-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 900px) {
+            .research-item {
+                flex-direction: column-reverse;
+                gap: 2rem;
+            }
+
+            .research-content {
+                padding-right: 0;
+            }
+
+            .research-image-wrapper {
+                width: 100%;
+            }
+
+            .research-image {
+                height: auto;
+                aspect-ratio: 16/9;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- Navigation -->
+    <nav id="navbar" class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo_transparent.png" alt="Vertige Logo" class="logo-img">
+                <div class="logo-text-wrapper">
+                    <span class="logo-text-primary">Vertige</span>
+                    <span class="logo-text-secondary">Investment Group</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="research.html" class="active">Research</a></li>
+                <li><a href="team.html">Team</a></li>
+            </ul>
+            <a href="join.html" class="btn btn-primary nav-cta">Join Vertige</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="about.html">About Us</a>
+        <a href="research.html">Research</a>
+        <a href="team.html">Team</a>
+        <a href="join.html" class="mobile-cta">Join Vertige</a>
+    </div>
+
+    <!-- Main Content -->
+    <main class="page-wrapper fade-up">
+        <div class="container research-container">
+            <div class="research-header">
+                <h1>Latest Releases</h1>
+
+                <!-- Search Bar -->
+                <div class="research-search-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                    <input type="text" id="research-search" placeholder="Search reports…" autocomplete="off">
+                </div>
+
+                <!-- Category Filter Pills -->
+                <div class="research-filters" id="research-filters">
+                    <button class="filter-pill active" data-filter="all">All</button>
+                    <button class="filter-pill" data-filter="Equity Research">Equity Research</button>
+                    <button class="filter-pill" data-filter="Macroeconomic Research">Macro</button>
+                    <button class="filter-pill" data-filter="Industry Report">Industry</button>
+                    <button class="filter-pill" data-filter="Public Policy Report">Public Policy</button>
+                    <button class="filter-pill" data-filter="Valuation Research">Valuation</button>
+                    <button class="filter-pill" data-filter="Competitive &amp; Financial Analysis">Competitive
+                        Analysis</button>
+                </div>
+
+                <!-- Sort Dropdown -->
+                <div class="research-sort-wrapper">
+                    <label for="research-sort">Sort by:</label>
+                    <select id="research-sort">
+                        <option value="date-desc">Newest First</option>
+                        <option value="date-asc">Oldest First</option>
+                        <option value="alpha-asc">A → Z</option>
+                        <option value="alpha-desc">Z → A</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="research-list" id="research-list">
+
+                <!-- Report: EQT Corporation: Initiating Coverage -->
+                <div class="research-item" data-category="Equity Research"
+                    data-keywords="EQT energy natural gas production Appalachia shale initiating coverage">
+                    <div class="research-content">
+                        <div class="research-date">Mar 3, 2026</div>
+                        <h2 class="research-title" title="EQT Corporation: Initiating Coverage">EQT Corporation:
+                            Initiating Coverage</h2>
+                        <div class="research-category">Equity Research</div>
+                        <a href="EQT%20IC%20Publish%20-%20Energy%20(2).pdf" class="research-link" target="_blank">View
+                            Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="eqt.webp" alt="EQT Corporation" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: M&A and Continuation Vehicles -->
+                <div class="research-item" data-category="Equity Research Special Edition"
+                    data-keywords="merger acquisition deal buyout private equity PE secondary gp-led continuation fund structure transaction">
+                    <div class="research-content">
+                        <div class="research-date">May 2, 2025</div>
+                        <h2 class="research-title" title="M&A and Continuation Vehicles">M&A and Continuation Vehicles
+                        </h2>
+                        <div class="research-category">Equity Research Special Edition</div>
+                        <a href="M%26A%20and%20Continuation%20Vehicles.pdf" class="research-link" target="_blank">View
+                            Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="Business Handshake.avif" alt="Handshake" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Global Macro Update: 11/23/2024 -->
+                <div class="research-item" data-category="Macroeconomic Research"
+                    data-keywords="fed federal reserve interest rates inflation CPI GDP economy monetary policy central bank recession growth unemployment bonds yield curve november 2024">
+                    <div class="research-content">
+                        <div class="research-date">Nov 23, 2024</div>
+                        <h2 class="research-title" title="Global Macro Update: 11/23/2024">Global Macro Update:
+                            11/23/2024</h2>
+                        <div class="research-category">Macroeconomic Research</div>
+                        <a href="Global%20Macro%20Update%20November_23_2024.pdf" class="research-link"
+                            target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="Italy.jpg" alt="City Skyline" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Pfizer: Initiating Coverage -->
+                <div class="research-item" data-category="Equity Research"
+                    data-keywords="PFE pharmaceutical pharma healthcare biotech drug medicine oncology vaccine dividend large cap NYSE initiating coverage">
+                    <div class="research-content">
+                        <div class="research-date">Nov 22, 2024</div>
+                        <h2 class="research-title" title="Pfizer: Initiating Coverage">Pfizer: Initiating Coverage</h2>
+                        <div class="research-category">Equity Research</div>
+                        <a href="PFE%20Initiating%20Coverage.pdf" class="research-link" target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="pfizer_sharp.png" alt="Pfizer Building" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: ESG Research: Canadian Oil & Gas -->
+                <div class="research-item" data-category="Industry Report"
+                    data-keywords="energy fossil fuel crude oil natural gas carbon emissions sustainability environment climate CNQ SU Canadian Natural Resources Suncor Alberta OPEC pipeline">
+                    <div class="research-content">
+                        <div class="research-date">Nov 11, 2024</div>
+                        <h2 class="research-title" title="ESG Research: Canadian Oil & Gas">ESG Research: Canadian Oil &
+                            Gas</h2>
+                        <div class="research-category">Industry Report</div>
+                        <a href="ESG%20Oil%20and%20Gas%20Report.pdf" class="research-link" target="_blank">View
+                            Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="oilgas.jpg" alt="Oil and Gas" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Goldman Sachs: Initiating Coverage -->
+                <div class="research-item" data-category="Equity Research"
+                    data-keywords="GS bank investment banking wealth management financial services Wall Street NYSE large cap trading revenue initiating coverage">
+                    <div class="research-content">
+                        <div class="research-date">Nov 9, 2024</div>
+                        <h2 class="research-title" title="Goldman Sachs: Initiating Coverage">Goldman Sachs: Initiating
+                            Coverage</h2>
+                        <div class="research-category">Equity Research</div>
+                        <a href="GS%20Initiating%20Coverage.pdf" class="research-link" target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="gs_sharp.png" alt="Goldman Sachs" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Palantir Technologies: Initiating Coverage -->
+                <div class="research-item" data-category="Equity Research"
+                    data-keywords="PLTR AI artificial intelligence data analytics government defence software SaaS big data NYSE tech technology initiating coverage">
+                    <div class="research-content">
+                        <div class="research-date">Nov 9, 2024</div>
+                        <h2 class="research-title" title="Palantir Technologies: Initiating Coverage">Palantir
+                            Technologies: Initiating Coverage</h2>
+                        <div class="research-category">Equity Research</div>
+                        <a href="PLTR%20Initiating%20Coverage.pdf" class="research-link" target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="pltr.webp" alt="Data Server" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: General Dynamics: Initiating Coverage -->
+                <div class="research-item" data-category="Equity Research"
+                    data-keywords="GD defence defense aerospace military government contracts Gulfstream IT services NYSE large cap industrial initiating coverage">
+                    <div class="research-content">
+                        <div class="research-date">Nov 9, 2024</div>
+                        <h2 class="research-title" title="General Dynamics: Initiating Coverage">General Dynamics:
+                            Initiating Coverage</h2>
+                        <div class="research-category">Equity Research</div>
+                        <a href="GD%20Initiating%20Coverage.pdf" class="research-link" target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="gd_sharp.png" alt="Industrial" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Griffon Corporation: Initiating Coverage -->
+                <div class="research-item" data-category="Equity Research"
+                    data-keywords="GFF home products defence specialty manufacturing consumer NYSE small cap industrial initiating coverage">
+                    <div class="research-content">
+                        <div class="research-date">Nov 9, 2024</div>
+                        <h2 class="research-title" title="Griffon Corporation: Initiating Coverage">Griffon Corporation:
+                            Initiating Coverage</h2>
+                        <div class="research-category">Equity Research</div>
+                        <a href="GFF%20Initiating%20Coverage.pdf" class="research-link" target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="gff.png" alt="Architecture" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Brookfield Renewable: Initiating Coverage -->
+                <div class="research-item" data-category="Equity Research"
+                    data-keywords="BEP.UN renewable energy wind solar hydro hydroelectric clean energy ESG green infrastructure TSX dividend yield initiating coverage">
+                    <div class="research-content">
+                        <div class="research-date">Nov 9, 2024</div>
+                        <h2 class="research-title" title="Brookfield Renewable: Initiating Coverage">Brookfield
+                            Renewable: Initiating Coverage</h2>
+                        <div class="research-category">Equity Research</div>
+                        <a href="BEP.UN%20Initiating%20Coverage.pdf" class="research-link" target="_blank">View
+                            Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="bf_sharp.png" alt="Renewable Energy" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Global Macro Update: 09/21/2024 -->
+                <div class="research-item" data-category="Macroeconomic Research"
+                    data-keywords="fed federal reserve interest rates inflation CPI GDP economy monetary policy central bank recession growth unemployment bonds yield curve september 2024">
+                    <div class="research-content">
+                        <div class="research-date">Sep 21, 2024</div>
+                        <h2 class="research-title" title="Global Macro Update: 09/21/2024">Global Macro Update:
+                            09/21/2024</h2>
+                        <div class="research-category">Macroeconomic Research</div>
+                        <a href="Global%20Macro%20Update%20September_21_2024.pdf" class="research-link"
+                            target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="birdseye_sharp.png" alt="Global Macro" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: ESG Research: EU Deforestation Dissuasion -->
+                <div class="research-item" data-category="Public Policy Report"
+                    data-keywords="forest deforestation EU Europe regulation policy sustainability timber agriculture supply chain biodiversity climate environment logging">
+                    <div class="research-content">
+                        <div class="research-date">Sep 16, 2024</div>
+                        <h2 class="research-title" title="ESG Research: EU Deforestation Dissuasion">ESG Research: EU
+                            Deforestation Dissuasion</h2>
+                        <div class="research-category">Public Policy Report</div>
+                        <a href="ESG%20Deforestation%20Report.pdf" class="research-link" target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="eu.webp" alt="Forestation" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Global Macro Update: 08/16/2024 -->
+                <div class="research-item" data-category="Macroeconomic Research"
+                    data-keywords="fed federal reserve interest rates inflation CPI GDP economy monetary policy central bank recession growth unemployment bonds yield curve august 2024">
+                    <div class="research-content">
+                        <div class="research-date">Aug 16, 2024</div>
+                        <h2 class="research-title" title="Global Macro Update: 08/16/2024">Global Macro Update:
+                            08/16/2024</h2>
+                        <div class="research-category">Macroeconomic Research</div>
+                        <a href="Global%20Macro%20Update%20August_16_2024.pdf" class="research-link"
+                            target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="ny.avif" alt="Business Strategy" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: ESG Research: Carbon Tax -->
+                <div class="research-item" data-category="Public Policy Report"
+                    data-keywords="carbon tax Canada emissions levy greenhouse gas GHG climate policy environment sustainability regulation fossil fuel Trudeau federal">
+                    <div class="research-content">
+                        <div class="research-date">Jul 20, 2024</div>
+                        <h2 class="research-title" title="ESG Research: Carbon Tax">ESG Research: Carbon Tax</h2>
+                        <div class="research-category">Public Policy Report</div>
+                        <a href="ESG%20Canadian%20Carbon%20Report.pdf" class="research-link" target="_blank">View
+                            Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="canadacarbon_sharp.png" alt="Carbon Impact" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: ESG Research: Food & Beverage/Agriculture -->
+                <div class="research-item" data-category="Industry Report"
+                    data-keywords="food beverage agriculture farming crop supply chain consumer staples nutrition restaurants retail sustainability ESG agri-food">
+                    <div class="research-content">
+                        <div class="research-date">Jun 26, 2024</div>
+                        <h2 class="research-title" title="ESG Research: Food & Beverage/Agriculture">ESG Research: Food
+                            & Beverage/Agriculture</h2>
+                        <div class="research-category">Industry Report</div>
+                        <a href="ESG%20F%26B%20Report.pdf" class="research-link" target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="foodbev_sharp.png" alt="Agriculture" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Equity Research: Morgan Stanley (NYSE: MS) -->
+                <div class="research-item" data-category="Competitive &amp; Financial Analysis"
+                    data-keywords="MS Morgan Stanley bank investment banking wealth management financial services brokerage NYSE financial analysis competitive landscape">
+                    <div class="research-content">
+                        <div class="research-date">May 28, 2024</div>
+                        <h2 class="research-title" title="Equity Research: Morgan Stanley (NYSE: MS)">Equity Research:
+                            Morgan Stanley (NYSE: MS)</h2>
+                        <div class="research-category">Competitive & Financial Analysis</div>
+                        <a href="MS%20Analysis.pdf" class="research-link" target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="ms.webp" alt="Corporate Analytics" class="research-image">
+                    </div>
+                </div>
+
+                <!-- Report: Institutional Services: LMM Spirits Producers -->
+                <div class="research-item" data-category="Valuation Research"
+                    data-keywords="spirits alcohol whiskey whisky vodka rum gin beverage LMM lower middle market DCF valuation distillery consumer staples">
+                    <div class="research-content">
+                        <div class="research-date">Jun 3, 2024</div>
+                        <h2 class="research-title" title="Institutional Services: LMM Spirits Producers">Institutional
+                            Services: LMM Spirits Producers</h2>
+                        <div class="research-category">Valuation Research</div>
+                        <a href="Spirits%20Industry%20Report.pdf" class="research-link" target="_blank">View Report</a>
+                    </div>
+                    <div class="research-image-wrapper">
+                        <img src="spirits.jpg" alt="Spirits" class="research-image">
+                    </div>
+                </div>
+                <div class="research-no-results" id="research-no-results">No reports match your search.</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo-col">
+                <a href="index.html" class="footer-logo">
+                    <img src="logo_white_transparent.png" alt="Vertige Logo">
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text-primary">Vertige</span>
+                        <span class="logo-text-secondary">Investment Group</span>
+                    </div>
+                </a>
+            </div>
+            <div class="footer-links-wrapper">
+                <div class="footer-col">
+                    <h4>Our Firm</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="team.html">Leadership</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Insights</h4>
+                    <a href="research.html">Research</a>
+                    <a href="research.html">Publications</a>
+                    <a href="https://www.linkedin.com/newsletters/7212272308051193857/" target="_blank">MarketPulse</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Careers</h4>
+                    <a href="join.html">Recruiting</a>
+                    <a href="#">Analyst Training</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <div class="footer-socials">
+                        <a href="https://ca.linkedin.com/company/vertige-investment-group" target="_blank"
+                            rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor" fill-rule="evenodd"
+                                    d="M3.86 8.926h3.341V20.57h-3.34zm1.586-1.457H5.42c-1.21 0-1.993-.89-1.993-2.017 0-1.15.807-2.023 2.04-2.023s1.991.87 2.016 2.02c0 1.127-.783 2.02-2.038 2.02M20.57 20.571h-3.79v-6.027c0-1.577-.592-2.653-1.895-2.653-.997 0-1.551.726-1.81 1.427-.096.25-.081.6-.081.952v6.301H9.241s.049-10.675 0-11.645h3.754v1.827c.222-.799 1.421-1.94 3.335-1.94 2.375 0 4.24 1.677 4.24 5.282z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/vertigeca" target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor"
+                                    d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6">
+                                </path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-legal-links">
+                <a href="disclosures.html">Regulatory Disclosures</a>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 Vertige Investment Group. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=1772521766"></script>
+    <script>
+        (function () {
+            const searchInput = document.getElementById('research-search');
+            const filterPills = document.querySelectorAll('.filter-pill');
+            const sortSelect = document.getElementById('research-sort');
+            const list = document.getElementById('research-list');
+            const noResults = document.getElementById('research-no-results');
+
+            let activeFilter = 'all';
+            let searchQuery = '';
+            let sortOrder = 'date-desc';
+
+            // Parse display dates like "May 2, 2025" -> Date object
+            function parseDate(str) {
+                return new Date(str.trim());
+            }
+
+            function getItems() {
+                return Array.from(document.querySelectorAll('.research-item'));
+            }
+
+            function applyAll() {
+                const items = getItems();
+
+                // 1. Sort DOM order
+                const sorted = [...items].sort((a, b) => {
+                    const titleA = a.querySelector('.research-title')?.textContent.trim() || '';
+                    const titleB = b.querySelector('.research-title')?.textContent.trim() || '';
+                    const dateA = parseDate(a.querySelector('.research-date')?.textContent || '');
+                    const dateB = parseDate(b.querySelector('.research-date')?.textContent || '');
+
+                    if (sortOrder === 'date-desc') return dateB - dateA;
+                    if (sortOrder === 'date-asc') return dateA - dateB;
+                    if (sortOrder === 'alpha-asc') return titleA.localeCompare(titleB);
+                    if (sortOrder === 'alpha-desc') return titleB.localeCompare(titleA);
+                    return 0;
+                });
+
+                sorted.forEach(item => list.insertBefore(item, noResults));
+
+                // 2. Filter + search visibility
+                let visibleCount = 0;
+                sorted.forEach(item => {
+                    const category = item.dataset.category || '';
+                    const title = item.querySelector('.research-title')?.textContent.toLowerCase() || '';
+                    const cat = item.querySelector('.research-category')?.textContent.toLowerCase() || '';
+                    const date = item.querySelector('.research-date')?.textContent.toLowerCase() || '';
+                    const keywords = (item.dataset.keywords || '').toLowerCase();
+
+                    const matchesFilter = activeFilter === 'all' || category === activeFilter;
+                    const matchesSearch = searchQuery === '' ||
+                        title.includes(searchQuery) ||
+                        cat.includes(searchQuery) ||
+                        date.includes(searchQuery) ||
+                        keywords.includes(searchQuery);
+
+                    if (matchesFilter && matchesSearch) {
+                        item.style.display = '';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+
+                noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+
+            // Filter pill clicks
+            filterPills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    filterPills.forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    activeFilter = pill.dataset.filter;
+                    applyAll();
+                });
+            });
+
+            // Search input
+            searchInput.addEventListener('input', () => {
+                searchQuery = searchInput.value.trim().toLowerCase();
+                applyAll();
+            });
+
+            // Sort dropdown
+            sortSelect.addEventListener('change', () => {
+                sortOrder = sortSelect.value;
+                applyAll();
+            });
+
+            // Initial render
+            applyAll();
+        })();
+    </script>
+</body>
+
+</html>
