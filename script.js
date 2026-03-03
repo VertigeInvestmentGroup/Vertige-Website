@@ -800,5 +800,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                 document.body.style.overflow = '';
             }
         });
+
+        // Close menu on X button click
+        const mobileCloseBtn = document.getElementById('mobile-close-btn');
+        if (mobileCloseBtn) {
+            mobileCloseBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                hamburger.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        }
     }
 });

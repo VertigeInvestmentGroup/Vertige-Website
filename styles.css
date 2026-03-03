@@ -1016,7 +1016,26 @@ h6 {
     gap: 2rem;
     opacity: 0;
     pointer-events: none;
+    padding-left: 5%;
+    padding-right: 5%;
     transition: opacity 0.3s ease;
+}
+
+.mobile-close-btn {
+    position: absolute;
+    top: 2rem;
+    right: 5%;
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--brand-indigo);
+    cursor: pointer;
+    line-height: 1;
+    z-index: 1100;
+    transition: color 0.2s ease;
+}
+
+.mobile-close-btn:hover {
+    color: var(--brand-gold);
 }
 
 .mobile-menu.open {
@@ -1054,6 +1073,10 @@ h6 {
    ========================================================================== */
 @media (max-width: 768px) {
 
+    #antigravity-bg {
+        display: none !important;
+    }
+
     /* — Navbar — */
     .nav-links,
     .nav-cta {
@@ -1069,6 +1092,12 @@ h6 {
         padding-top: 100px;
         min-height: 100vh;
         padding-bottom: 2rem;
+    }
+
+    .sphere-section {
+        height: auto;
+        min-height: 100vh;
+        padding: 4rem 0;
     }
 
     .hero-title {
