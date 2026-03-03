@@ -985,6 +985,11 @@ h6 {
     transform-origin: center;
 }
 
+/* Match logo color on transparent homepage navbar */
+.navbar.navbar-home:not(.scrolled) .hamburger span {
+    background: #ffffff;
+}
+
 .hamburger.open span:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
 }
@@ -1187,21 +1192,23 @@ h6 {
     /* — Footer — */
     .footer-content {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 0;
     }
 
     .footer-logo {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0;
     }
 
     .footer-logo-col {
         flex: none;
         width: 100%;
+        margin-bottom: 0;
     }
 
     .footer-links-wrapper {
         flex-direction: column;
         gap: 2rem;
+        margin-top: 1rem;
     }
 
     .footer-bottom {
