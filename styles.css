@@ -1343,5 +1343,4 @@ h6 {
 /* User Request: Hide Portfolio page temporarily */
 a[href="portfolio.html"] {
     display: none !important;
-
 }
