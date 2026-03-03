@@ -389,7 +389,7 @@ h6 {
     padding-top: 140px;
     z-index: 10;
     /* Mountain background */
-    background-image: url('hero_unsplash.jpg');
+    background-image: url('hero_unsplashed.jpg');
     background-size: cover;
     background-position: center 40%;
     background-repeat: no-repeat;
@@ -1343,5 +1343,4 @@ h6 {
 /* User Request: Hide Portfolio page temporarily */
 a[href="portfolio.html"] {
     display: none !important;
-
 }
