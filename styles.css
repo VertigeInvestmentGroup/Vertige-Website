@@ -1098,6 +1098,12 @@ h6 {
         height: auto;
         min-height: 100vh;
         padding: 4rem 0;
+        overflow: visible;
+    }
+
+    .sphere-section .container {
+        align-items: flex-start !important;
+        height: auto !important;
     }
 
     .hero-title {
