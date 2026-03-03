@@ -274,7 +274,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Positioning on the right side of the screen
             const isMobile = width < 768;
             const centerX = isMobile ? width * 0.5 : width * 0.70;
-            const centerY = isMobile ? height * 0.3 : height * 0.5;
+            const centerY = isMobile ? height * 0.8 : height * 0.5;
 
             // Responsive sizing of the shape with a subtle continuous pulse
             const baseRadius = Math.min(width, height) * (isMobile ? 0.35 : 0.45);

@@ -1067,7 +1067,8 @@ h6 {
     /* — Hero — */
     .hero {
         padding-top: 100px;
-        min-height: 80vh;
+        min-height: 100vh;
+        padding-bottom: 2rem;
     }
 
     .hero-title {
