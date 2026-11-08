@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             n.fill(0);
             // colour wave: a band of colour sweeps around the blob and ripples outward
             for (let i = 0; i < count; i++) {
-                const w = 0.5 + 0.5 * Math.sin(ang[i] - t * 0.7 + u[i] * 3.2);
+                const w = 0.5 + 0.5 * Math.sin(Math.cos(ang[i]) * u[i] * 1.7 - t * 0.6); // one smooth gradient sweeping left to right
                 const k = Math.min(NC - 1, (w * NC) | 0);
                 lists[k][n[k]++] = i;
             }
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // point at the blob centre
                     const ddx = x[i] - blob.x, ddy = y[i] - blob.y;
                     const dl = Math.hypot(ddx, ddy) || 1;
-                    const hl = len[i] * 0.5 * sc[i];
+                    const hl = len[i] * 0.5 * sc[i] * (0.3 + 0.7 * u[i]); // smaller toward the centre
                     const dx = ddx / dl * hl, dy = ddy / dl * hl;
                     ctx.moveTo(x[i] - dx, y[i] - dy);
                     ctx.lineTo(x[i] + dx, y[i] + dy);
