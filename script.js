@@ -92,6 +92,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- Living Organism Background Engine ---
     const antigravityBg = document.getElementById('antigravity-bg');
 
+    // "Vertige at a Glance" (about page): same blob shape as the landing page, one solid colour on black
+    const glanceBg = document.getElementById('glance-bg');
+    if (glanceBg) {
+        initParticleField(glanceBg, { stops: [[99, 123, 230], [99, 123, 230]] }); // one solid brand blue
+    }
+
     if (antigravityBg) {
         // Clear out the old CSS orb and particles
         antigravityBg.innerHTML = '';
@@ -106,7 +112,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // A cloud of small dashes forms a soft blob that trails the cursor (and wanders on its own
     // when the cursor is away). Every dash points at the blob's centre, ripples travel outward
     // through the blob, and a wave of colour sweeps around it.
-    function initParticleField(container) {
+    function initParticleField(container, opts) {
+        opts = opts || {};
         const canvas = document.createElement('canvas');
         canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
         container.appendChild(canvas);
@@ -114,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         // palette from the Vertige brand: navy -> brand blue -> gold, and back again
-        const STOPS = [[17, 34, 64], [60, 84, 170], [99, 123, 230], [214, 168, 150], [229, 176, 114]]; // Vertige navy, brand blue, gold
+        const STOPS = opts.stops || [[17, 34, 64], [60, 84, 170], [99, 123, 230], [214, 168, 150], [229, 176, 114]]; // Vertige navy, brand blue, gold
         const NC = 16;
         const TIER_W = [1.3, 2.1, 3];
         const PALETTE = [];
@@ -147,8 +154,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             first = true;
 
             const mobile = width < 700;
-            baseR = Math.min(mobile ? 300 : 640, Math.min(width, height) * 0.62);
-            count = mobile ? 210 : 363;
+            baseR = opts.radius ? opts.radius(width, height, mobile) : Math.min(mobile ? 300 : 640, Math.min(width, height) * 0.62);
+            count = Math.round((mobile ? 210 : 363) * (opts.countScale || 1));
             [u, ang, ph, kk, len, x, y, vx, vy, sc] = Array.from({ length: 10 }, () => new Float32Array(count));
             lists = Array.from({ length: NC * 3 }, () => new Uint16Array(count));
             lists.n = new Uint16Array(NC * 3);
