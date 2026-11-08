@@ -508,7 +508,7 @@ h6 {
 
 .about-title {
     font-family: var(--font-heading);
-    font-weight: 400;
+    font-weight: 500;
     font-size: clamp(2.75rem, 6vw, 4.5rem);
     line-height: 1.05;
     letter-spacing: -0.035em;
@@ -856,7 +856,7 @@ h6 {
 
 .impact-header h2 {
     font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: -0.03em;
 }
 
