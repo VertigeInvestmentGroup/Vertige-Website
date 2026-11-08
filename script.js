@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ang[i] = i * golden;
                 ph[i] = Math.random() * 6.283;
                 kk[i] = 0.03 + Math.random() * 0.06; // varied stiffness gives a trailing swarm
-                len[i] = Math.random() < 0.85 ? 3.4 + Math.random() * 1.6 : 0.2;
+                len[i] = Math.random() < 0.85 ? 4.4 + Math.random() * 2 : 0.2;
                 x[i] = blob.x; y[i] = blob.y; sc[i] = 1;
             }
         }
