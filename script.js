@@ -95,7 +95,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // "Vertige at a Glance" (about page): same blob shape as the landing page, one solid colour on black
     const glanceBg = document.getElementById('glance-bg');
     if (glanceBg) {
-        initParticleField(glanceBg, { stops: [[99, 123, 230], [99, 123, 230]] }); // one solid brand blue
+        initParticleField(glanceBg, {
+            stops: [[99, 123, 230], [99, 123, 230]],
+            sizeScale: 1.13,
+            countScale: 1.3,
+            radius: (w, h, mobile) => Math.min(mobile ? 420 : 780, Math.max(w * 0.55, h * 0.95))
+        }); // one solid brand blue
     }
 
     if (antigravityBg) {
@@ -123,6 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // palette from the Vertige brand: navy -> brand blue -> gold, and back again
         const STOPS = opts.stops || [[17, 34, 64], [60, 84, 170], [99, 123, 230], [214, 168, 150], [229, 176, 114]]; // Vertige navy, brand blue, gold
         const NC = 16;
+        const SS = opts.sizeScale || 1;
         const TIER_W = [1.3, 2.1, 3];
         const PALETTE = [];
         for (let k = 0; k < NC; k++) {
@@ -196,7 +202,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             for (let k = 0; k < NC * 3; k++) {
                 if (!n[k]) continue;
                 ctx.strokeStyle = PALETTE[k % NC];
-                ctx.lineWidth = TIER_W[(k / NC) | 0];
+                ctx.lineWidth = TIER_W[(k / NC) | 0] * SS;
                 ctx.beginPath();
                 const list = lists[k];
                 for (let m = 0; m < n[k]; m++) {
@@ -204,7 +210,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // point at the blob centre
                     const ddx = x[i] - blob.x, ddy = y[i] - blob.y;
                     const dl = Math.sqrt(ddx * ddx + ddy * ddy) || 1;
-                    const hl = len[i] * 0.5 * sc[i] * (0.04 + 0.96 * Math.pow(u[i], 2.6)); // smaller toward the centre
+                    const hl = len[i] * 0.5 * SS * sc[i] * (0.04 + 0.96 * Math.pow(u[i], 2.6)); // smaller toward the centre
                     const dx = ddx / dl * hl, dy = ddy / dl * hl;
                     ctx.moveTo(x[i] - dx, y[i] - dy);
                     ctx.lineTo(x[i] + dx, y[i] + dy);
