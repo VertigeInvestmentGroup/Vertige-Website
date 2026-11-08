@@ -6,6 +6,7 @@
 window.VIG_PLACEMENTS = [
     { firm: "BMO Capital Markets", logo: "logos/bmo.png", placement: "Investment Banking", location: "Toronto" },
     { firm: "BMO Capital Markets", logo: "logos/bmo.png", placement: "Investment Banking", location: "Toronto" },
+    { firm: "RBC Capital Markets", logo: "logos/rbc.png", placement: "Global Markets", location: "Toronto" },
     { firm: "Citi", logo: "logos/citi.png", placement: "Investment Banking", location: "London" },
     { firm: "Scotiabank Global Banking and Markets", logo: "logos/scotia-gbm.png", placement: "Investment Banking", location: "Toronto" },
     { firm: "BDA Partners", logo: "logos/bda.png", placement: "Investment Banking", location: "New York" },

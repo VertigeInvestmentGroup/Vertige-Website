@@ -34,19 +34,22 @@
         /* Wordmark fallback when a logo file is missing */
         .pl-word { font-family: var(--font-heading); font-weight: 600; font-size: 1.35rem; letter-spacing: -0.02em; color: #374151; white-space: nowrap; text-align: center; line-height: 1.1; }
 
-        /* Tombstones */
-        .pl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.25rem; margin-bottom: 7rem; }
+        /* Tombstones: compact white squares, logo on top, two small lines underneath */
+        .pl-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 7rem; }
         .pl-stone {
-            display: flex; flex-direction: column; background: #fafafa; border: 1px solid #ececef; border-radius: 20px; overflow: hidden;
-            transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+            width: 176px; height: 176px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center;
+            background: #fff; border: 1px solid #e4e4e9; border-radius: 6px; padding: 12px 10px 14px;
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
         }
-        .pl-stone:hover { transform: translateY(-4px); background: #fff; box-shadow: 0 18px 40px -22px rgba(10, 25, 47, .35); }
-        .pl-stone-logo { height: 150px; display: flex; align-items: center; justify-content: center; padding: 1.5rem 2rem; }
-        .pl-stone-logo img { max-height: 62px; max-width: 80%; object-fit: contain; }
-        .pl-stone-logo img.sq { max-height: 96px; }
-        .pl-stone-logo .pl-word { font-size: 1.6rem; }
-        .pl-stone-tag { border-top: 1px solid #ececef; padding: 0.95rem 1rem 1rem; text-align: center; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #1f2937; }
-        .pl-stone-tag span { display: block; margin-top: 0.3rem; font-size: 0.78rem; font-weight: 400; letter-spacing: 0.04em; text-transform: none; color: #9ca3af; }
+        .pl-stone:hover { transform: translateY(-3px); border-color: #cfd0d8; box-shadow: 0 14px 30px -18px rgba(10, 25, 47, .4); }
+        .pl-stone-logo { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; }
+        .pl-stone-logo img { max-height: 50px; max-width: 88%; object-fit: contain; }
+        .pl-stone-logo img.sq { max-height: 70px; }
+        .pl-stone-logo .pl-word { font-size: 1.15rem; }
+        .pl-stone-tag { text-align: center; font-size: 0.74rem; line-height: 1.4; font-weight: 500; color: #1f2937; }
+        .pl-stone-tag span { display: block; font-weight: 400; color: #4b5563; }
+
+        @media (max-width: 520px) { .pl-stone { width: calc(50% - 6px); height: 160px; } }
 
         .pl-empty { text-align: center; padding: 5rem 1rem 8rem; color: var(--text-muted); }
         .pl-empty h2 { font-size: var(--h2-size); margin-bottom: 0.75rem; }
