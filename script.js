@@ -235,17 +235,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             blob.vx += (tx - blob.vx) * e1; blob.vy += (ty - blob.vy) * e1; // eased target
             blob.x += (blob.vx - blob.x) * e2; blob.y += (blob.vy - blob.y) * e2;
 
-            const pulse = 1 + 0.03 * Math.sin(t * 0.7);
+            const pulse = 1 + 0.04 * Math.sin(t * 0.9);
+            // the wave's heading slowly wanders, so it never sweeps in a perfectly straight line
+            const heading = 0.55 * Math.sin(t * 0.21) + 0.25 * Math.sin(t * 0.47 + 1.2);
+            // a very light breathing pulse shared by every dash
+            const breathe = 1 + 0.06 * Math.sin(t * 1.3);
             const damp = Math.pow(0.8, f);
             for (let i = 0; i < count; i++) {
                 const a = ang[i];
                 // gentle undulating outline plus ripples travelling outward through the blob
                 const shape = 1 + 0.03 * Math.sin(2 * a + t * 0.7) + 0.02 * Math.sin(3 * a - t * 0.9);
-                const wph = Math.cos(a) * u[i] * 5.5 - t * 1.9; // travels left to right across the blob
+                const wph = Math.cos(a - heading) * u[i] * 5.5 + 0.7 * Math.sin(2 * a + t * 0.35 + ph[i] * 0.03) * u[i] - t * 1.9; // travels roughly left to right, a little uneven
                 const ripple = 1 + 0.08 * Math.sin(wph);
                 // dashes contract as the crest passes, lagging the wave a touch and eased for a natural feel
                 const sw = Math.sin(wph - 0.7 + ph[i] * 0.05);
-                sc[i] += ((1 - 0.3 * (0.5 + 0.5 * sw) ) - sc[i]) * Math.min(1, 0.15 * f);
+                sc[i] += ((breathe - 0.3 * (0.5 + 0.5 * sw)) - sc[i]) * Math.min(1, 0.15 * f);
                 const r = u[i] * baseR * pulse * shape * ripple;
                 const tx2 = blob.x + Math.cos(a) * r;
                 const ty2 = blob.y + Math.sin(a) * r;
