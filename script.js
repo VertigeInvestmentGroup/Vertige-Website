@@ -113,8 +113,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const ctx = canvas.getContext('2d', { alpha: true });
 
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        // cyclic palette: blue -> purple -> red -> orange -> yellow -> and back again
-        const STOPS = [[74, 99, 230], [154, 82, 184], [224, 71, 95], [245, 154, 35], [244, 194, 13]];
+        // palette from the Vertige brand: navy -> brand blue -> gold, and back again
+        const STOPS = [[17, 34, 64], [60, 84, 170], [99, 123, 230], [214, 168, 150], [229, 176, 114]]; // Vertige navy, brand blue, gold
         const NC = 16;
         const PALETTE = [];
         for (let k = 0; k < NC; k++) {
