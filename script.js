@@ -103,8 +103,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // --- Landing page: interactive particle field ---
-    // A field of small dashes that drift gently, are pushed away by the cursor and
-    // spring back into place, with dashes turning to follow the cursor's influence.
+    // A phyllotaxis-style radial scatter of multicoloured dashes and dots. Dashes point away
+    // from the centre, colours blend by direction, and the cursor carves out an empty zone
+    // where dashes swing to face away from it. Drawing is batched per colour/size for speed.
     function initParticleField(container) {
         const canvas = document.createElement('canvas');
         canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
@@ -112,139 +113,167 @@ document.addEventListener("DOMContentLoaded", async () => {
         const ctx = canvas.getContext('2d', { alpha: true });
 
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let width = 0, height = 0, dpr = 1;
-        let particles = [];
+        const COLORS = ['#4a63e6', '#9a52b8', '#e0475f', '#f59a23', '#f4c20d']; // blue, purple, red, orange, yellow
+        const WIDTHS = [1.1, 1.8, 2.5];
+        const NB = COLORS.length * WIDTHS.length;
+
+        let width = 0, height = 0, dpr = 1, count = 0;
+        let hx, hy, x, y, vx, vy, len, ca, sa, bucket, ph;
+        let buckets = [];
         let rect = container.getBoundingClientRect();
-        const mouse = { x: -9999, y: -9999, active: false };
-        let running = true;
+        const mouse = { x: -9999, y: -9999, sx: -9999, sy: -9999, active: false };
+        let running = true, rafId = 0, last = 0;
 
         function build() {
             rect = container.getBoundingClientRect();
-            width = rect.width;
-            height = rect.height;
-            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            width = rect.width; height = rect.height;
+            dpr = Math.min(window.devicePixelRatio || 1, 1.5);
             canvas.width = Math.round(width * dpr);
             canvas.height = Math.round(height * dpr);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-            const isMobile = width < 768;
-            const spacing = isMobile ? 34 : 30;
-            const cols = Math.ceil(width / spacing) + 1;
-            const rows = Math.ceil(height / spacing) + 1;
-            particles = [];
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    // Jittered grid so the field looks organic, not mechanical
-                    const hx = c * spacing + (Math.random() - 0.5) * spacing * 0.9;
-                    const hy = r * spacing + (Math.random() - 0.5) * spacing * 0.9;
-                    const ratio = Math.max(0, Math.min(1, hx / width));
-                    particles.push({
-                        hx: hx, hy: hy, x: hx, y: hy, vx: 0, vy: 0,
-                        len: 3 + Math.random() * 4,
-                        phase: Math.random() * Math.PI * 2,
-                        speed: 0.0004 + Math.random() * 0.0006,
-                        angle: 0,
-                        hue: 232 - ratio * 42,
-                        light: 30 + ratio * 30,
-                        // Quieter on the left half, where the headline text sits
-                        base: (!isMobile && ratio < 0.5) ? 0.3 : 0.8
-                    });
-                }
-            }
-        }
-
-        function flowAngle(x, y, t) {
-            return Math.sin(x * 0.006 + t * 0.0002) + Math.cos(y * 0.007 - t * 0.00015);
-        }
-
-        function frame(time) {
-            if (!running) return;
-            ctx.clearRect(0, 0, width, height);
-            const R = Math.min(190, Math.max(120, width * 0.12));
             ctx.lineCap = 'round';
-            ctx.lineWidth = 1.6;
 
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                // Ambient drift of the rest position
-                const tx = p.hx + Math.sin(time * p.speed + p.phase) * 7;
-                const ty = p.hy + Math.cos(time * p.speed * 1.1 + p.phase) * 7;
+            const mobile = width < 700;
+            count = Math.min(mobile ? 650 : 1500, Math.round(width * height / (mobile ? 700 : 950)));
+            hx = new Float32Array(count); hy = new Float32Array(count);
+            x = new Float32Array(count); y = new Float32Array(count);
+            vx = new Float32Array(count); vy = new Float32Array(count);
+            len = new Float32Array(count); ca = new Float32Array(count); sa = new Float32Array(count);
+            ph = new Float32Array(count); bucket = new Uint8Array(count);
+            buckets = Array.from({ length: NB }, () => []);
 
-                // Spring back toward rest position
-                p.vx += (tx - p.x) * 0.045;
-                p.vy += (ty - p.y) * 0.045;
+            const cx = width / 2, cy = height / 2;
+            const rx = width * 0.56, ry = height * 0.62;
+            const golden = 2.399963;
+            const blueDir = -Math.PI * 0.75; // blue toward the top-left, warm toward the bottom-right
+            for (let i = 0; i < count; i++) {
+                const t = Math.sqrt((i + 0.5) / count);
+                const a = i * golden;
+                const px = cx + Math.cos(a) * rx * t;
+                const py = cy + Math.sin(a) * ry * t;
+                hx[i] = x[i] = px; hy[i] = y[i] = py;
+                const ang = Math.atan2(py - cy, px - cx);
+                ca[i] = Math.cos(ang); sa[i] = Math.sin(ang);
+                ph[i] = Math.random() * 6.283;
+                // bell-shaped size: tiny dots near the centre and far edge, bigger dashes in between
+                const bell = Math.exp(-Math.pow((t - 0.62) / 0.3, 2));
+                const big = Math.random() < 0.35 + 0.5 * bell;
+                len[i] = big ? 2.5 + 5.5 * bell + Math.random() * 1.5 : 0.2;
+                const wi = !big ? 0 : (bell > 0.6 ? 2 : 1);
+                let c = 0.5 + 0.5 * Math.cos(Math.atan2(py - cy, px - cx) - blueDir);
+                c = Math.min(0.999, Math.max(0, c + (Math.random() - 0.5) * 0.25));
+                const ci = COLORS.length - 1 - Math.floor(c * COLORS.length);
+                bucket[i] = ci * WIDTHS.length + wi;
+                buckets[bucket[i]].push(i);
+            }
+            // tiny dots are paler so the dashes read as the focus
+        }
 
-                // Push away from the cursor
-                let near = 0;
-                let dx = 0, dy = 0;
-                if (mouse.active) {
-                    dx = p.x - mouse.x;
-                    dy = p.y - mouse.y;
-                    const d2 = dx * dx + dy * dy;
-                    if (d2 < R * R) {
-                        const d = Math.sqrt(d2) || 1;
-                        near = 1 - d / R;
-                        const push = near * near * 7;
-                        p.vx += (dx / d) * push;
-                        p.vy += (dy / d) * push;
-                    }
-                }
-
-                p.vx *= 0.86;
-                p.vy *= 0.86;
-                p.x += p.vx;
-                p.y += p.vy;
-
-                // Dash orientation: follows a slow flow field, turns to radiate from the cursor when near
-                const base = flowAngle(p.x, p.y, time);
-                let target = base;
-                if (near > 0.02) {
-                    const away = Math.atan2(dy, dx);
-                    let diff = away - base;
-                    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-                    target = base + diff * Math.min(1, near * 1.6);
-                }
-                let da = target - p.angle;
-                da = Math.atan2(Math.sin(da), Math.cos(da));
-                p.angle += da * 0.12;
-
-                const half = (p.len + near * 3) / 2;
-                const ox = Math.cos(p.angle) * half;
-                const oy = Math.sin(p.angle) * half;
-                const alpha = Math.min(1, p.base + near * 0.4);
-                ctx.strokeStyle = 'hsla(' + p.hue + ',85%,' + (p.light + near * 12) + '%,' + alpha + ')';
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            for (let b = 0; b < NB; b++) {
+                const list = buckets[b];
+                if (!list.length) continue;
+                const wi = b % WIDTHS.length;
+                ctx.strokeStyle = COLORS[(b / WIDTHS.length) | 0];
+                ctx.globalAlpha = wi === 0 ? 0.55 : 0.95;
+                ctx.lineWidth = WIDTHS[wi];
                 ctx.beginPath();
-                ctx.moveTo(p.x - ox, p.y - oy);
-                ctx.lineTo(p.x + ox, p.y + oy);
+                for (let k = 0; k < list.length; k++) {
+                    const i = list[k];
+                    const hl = len[i] * 0.5;
+                    const dx = ca[i] * hl, dy = sa[i] * hl;
+                    ctx.moveTo(x[i] - dx, y[i] - dy);
+                    ctx.lineTo(x[i] + dx, y[i] + dy);
+                }
                 ctx.stroke();
             }
-            if (!reduceMotion) requestAnimationFrame(frame);
         }
 
-        function setMouse(clientX, clientY) {
-            mouse.x = clientX - rect.left;
-            mouse.y = clientY - rect.top;
-            mouse.active = mouse.y > -150 && mouse.y < height + 150;
+        function frame(now) {
+            if (!running) { rafId = 0; return; }
+            const dt = Math.min(now - (last || now), 50);
+            last = now;
+            const f = dt / 16.667;
+            // smooth the cursor so the clearing glides instead of jumping
+            const follow = 1 - Math.pow(0.001, dt / 1000 * 1.0);
+            if (mouse.active) {
+                if (mouse.sx < -9000) { mouse.sx = mouse.x; mouse.sy = mouse.y; }
+                mouse.sx += (mouse.x - mouse.sx) * follow;
+                mouse.sy += (mouse.y - mouse.sy) * follow;
+            }
+            const R = Math.min(210, Math.max(130, width * 0.14));
+            const R2 = R * R;
+            const spring = 0.05 * f, damp = Math.pow(0.84, f);
+            const t = now * 0.0004;
+            const mx = mouse.sx, my = mouse.sy, on = mouse.active;
+            for (let i = 0; i < count; i++) {
+                const tx = hx[i] + Math.sin(t + ph[i]) * 2.5;
+                const ty = hy[i] + Math.cos(t * 1.1 + ph[i]) * 2.5;
+                vx[i] += (tx - x[i]) * spring;
+                vy[i] += (ty - y[i]) * spring;
+                let tca = 0, tsa = 0, near = 0;
+                if (on) {
+                    const dx = x[i] - mx, dy = y[i] - my;
+                    const d2 = dx * dx + dy * dy;
+                    if (d2 < R2 && d2 > 0.01) {
+                        const d = Math.sqrt(d2);
+                        near = 1 - d / R;
+                        const push = near * near * 9 * f;
+                        vx[i] += dx / d * push;
+                        vy[i] += dy / d * push;
+                        tca = dx / d; tsa = dy / d;
+                    }
+                }
+                vx[i] *= damp; vy[i] *= damp;
+                x[i] += vx[i] * f; y[i] += vy[i] * f;
+                if (near > 0) {
+                    // swing toward pointing away from the cursor (shortest way round)
+                    const k = Math.min(1, 0.25 * f + near * 0.4);
+                    ca[i] += (tca - ca[i]) * k; sa[i] += (tsa - sa[i]) * k;
+                    const m = 1 / Math.hypot(ca[i], sa[i]);
+                    ca[i] *= m; sa[i] *= m;
+                } else if (Math.abs(vx[i]) + Math.abs(vy[i]) < 0.05) {
+                    // relax back toward the radial direction when at rest
+                    const cx = width / 2, cy = height / 2;
+                    const rx = hx[i] - cx, ry = hy[i] - cy;
+                    const rl = Math.hypot(rx, ry) || 1;
+                    ca[i] += (rx / rl - ca[i]) * 0.06 * f;
+                    sa[i] += (ry / rl - sa[i]) * 0.06 * f;
+                }
+            }
+            draw();
+            rafId = requestAnimationFrame(frame);
         }
-        window.addEventListener('mousemove', function (e) { setMouse(e.clientX, e.clientY); });
-        window.addEventListener('touchmove', function (e) {
-            if (e.touches && e.touches[0]) setMouse(e.touches[0].clientX, e.touches[0].clientY);
-        }, { passive: true });
-        document.addEventListener('mouseleave', function () { mouse.active = false; });
-        window.addEventListener('scroll', function () { rect = container.getBoundingClientRect(); }, { passive: true });
-        window.addEventListener('resize', build);
 
-        // Pause when off-screen to save battery
-        if ('IntersectionObserver' in window) {
-            new IntersectionObserver(function (entries) {
-                const visible = entries[0].isIntersecting;
-                if (visible && !running) { running = true; requestAnimationFrame(frame); }
-                else if (!visible) { running = false; }
-            }).observe(container);
+        function start() {
+            if (reduceMotion || rafId) return;
+            running = true; last = 0;
+            rafId = requestAnimationFrame(frame);
         }
+
+        function setMouse(cx, cy) {
+            mouse.x = cx - rect.left; mouse.y = cy - rect.top;
+            mouse.active = mouse.x >= -50 && mouse.x <= width + 50 && mouse.y >= -50 && mouse.y <= height + 50;
+        }
+        window.addEventListener('mousemove', e => setMouse(e.clientX, e.clientY), { passive: true });
+        window.addEventListener('touchmove', e => { if (e.touches[0]) setMouse(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+        document.addEventListener('mouseleave', () => { mouse.active = false; mouse.sx = -9999; });
+        window.addEventListener('scroll', () => { rect = container.getBoundingClientRect(); setMouse(mouse.x + rect.left, mouse.y + rect.top); }, { passive: true });
+        let rt;
+        window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); draw(); }, 150); });
 
         build();
-        requestAnimationFrame(frame);
+        draw();
+        if (!reduceMotion) {
+            if ('IntersectionObserver' in window) {
+                new IntersectionObserver(entries => {
+                    if (entries[0].isIntersecting) start();
+                    else { running = false; }
+                }).observe(container);
+            }
+            start();
+        }
     }
 
     function initCanvasOrganism(container) {
