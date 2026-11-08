@@ -95,7 +95,156 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (antigravityBg) {
         // Clear out the old CSS orb and particles
         antigravityBg.innerHTML = '';
-        initCanvasOrganism(antigravityBg);
+        if (document.body.classList.contains('home-page')) {
+            initParticleField(antigravityBg);
+        } else {
+            initCanvasOrganism(antigravityBg);
+        }
+    }
+
+    // --- Landing page: interactive particle field ---
+    // A field of small dashes that drift gently, are pushed away by the cursor and
+    // spring back into place, with dashes turning to follow the cursor's influence.
+    function initParticleField(container) {
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
+        container.appendChild(canvas);
+        const ctx = canvas.getContext('2d', { alpha: true });
+
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let width = 0, height = 0, dpr = 1;
+        let particles = [];
+        let rect = container.getBoundingClientRect();
+        const mouse = { x: -9999, y: -9999, active: false };
+        let running = true;
+
+        function build() {
+            rect = container.getBoundingClientRect();
+            width = rect.width;
+            height = rect.height;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.round(width * dpr);
+            canvas.height = Math.round(height * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            const isMobile = width < 768;
+            const spacing = isMobile ? 34 : 30;
+            const cols = Math.ceil(width / spacing) + 1;
+            const rows = Math.ceil(height / spacing) + 1;
+            particles = [];
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    // Jittered grid so the field looks organic, not mechanical
+                    const hx = c * spacing + (Math.random() - 0.5) * spacing * 0.9;
+                    const hy = r * spacing + (Math.random() - 0.5) * spacing * 0.9;
+                    const ratio = Math.max(0, Math.min(1, hx / width));
+                    particles.push({
+                        hx: hx, hy: hy, x: hx, y: hy, vx: 0, vy: 0,
+                        len: 3 + Math.random() * 4,
+                        phase: Math.random() * Math.PI * 2,
+                        speed: 0.0004 + Math.random() * 0.0006,
+                        angle: 0,
+                        hue: 232 - ratio * 42,
+                        light: 30 + ratio * 30,
+                        // Quieter on the left half, where the headline text sits
+                        base: (!isMobile && ratio < 0.5) ? 0.3 : 0.8
+                    });
+                }
+            }
+        }
+
+        function flowAngle(x, y, t) {
+            return Math.sin(x * 0.006 + t * 0.0002) + Math.cos(y * 0.007 - t * 0.00015);
+        }
+
+        function frame(time) {
+            if (!running) return;
+            ctx.clearRect(0, 0, width, height);
+            const R = Math.min(190, Math.max(120, width * 0.12));
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 1.6;
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                // Ambient drift of the rest position
+                const tx = p.hx + Math.sin(time * p.speed + p.phase) * 7;
+                const ty = p.hy + Math.cos(time * p.speed * 1.1 + p.phase) * 7;
+
+                // Spring back toward rest position
+                p.vx += (tx - p.x) * 0.045;
+                p.vy += (ty - p.y) * 0.045;
+
+                // Push away from the cursor
+                let near = 0;
+                let dx = 0, dy = 0;
+                if (mouse.active) {
+                    dx = p.x - mouse.x;
+                    dy = p.y - mouse.y;
+                    const d2 = dx * dx + dy * dy;
+                    if (d2 < R * R) {
+                        const d = Math.sqrt(d2) || 1;
+                        near = 1 - d / R;
+                        const push = near * near * 7;
+                        p.vx += (dx / d) * push;
+                        p.vy += (dy / d) * push;
+                    }
+                }
+
+                p.vx *= 0.86;
+                p.vy *= 0.86;
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Dash orientation: follows a slow flow field, turns to radiate from the cursor when near
+                const base = flowAngle(p.x, p.y, time);
+                let target = base;
+                if (near > 0.02) {
+                    const away = Math.atan2(dy, dx);
+                    let diff = away - base;
+                    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+                    target = base + diff * Math.min(1, near * 1.6);
+                }
+                let da = target - p.angle;
+                da = Math.atan2(Math.sin(da), Math.cos(da));
+                p.angle += da * 0.12;
+
+                const half = (p.len + near * 3) / 2;
+                const ox = Math.cos(p.angle) * half;
+                const oy = Math.sin(p.angle) * half;
+                const alpha = Math.min(1, p.base + near * 0.4);
+                ctx.strokeStyle = 'hsla(' + p.hue + ',85%,' + (p.light + near * 12) + '%,' + alpha + ')';
+                ctx.beginPath();
+                ctx.moveTo(p.x - ox, p.y - oy);
+                ctx.lineTo(p.x + ox, p.y + oy);
+                ctx.stroke();
+            }
+            if (!reduceMotion) requestAnimationFrame(frame);
+        }
+
+        function setMouse(clientX, clientY) {
+            mouse.x = clientX - rect.left;
+            mouse.y = clientY - rect.top;
+            mouse.active = mouse.y > -150 && mouse.y < height + 150;
+        }
+        window.addEventListener('mousemove', function (e) { setMouse(e.clientX, e.clientY); });
+        window.addEventListener('touchmove', function (e) {
+            if (e.touches && e.touches[0]) setMouse(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        document.addEventListener('mouseleave', function () { mouse.active = false; });
+        window.addEventListener('scroll', function () { rect = container.getBoundingClientRect(); }, { passive: true });
+        window.addEventListener('resize', build);
+
+        // Pause when off-screen to save battery
+        if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function (entries) {
+                const visible = entries[0].isIntersecting;
+                if (visible && !running) { running = true; requestAnimationFrame(frame); }
+                else if (!visible) { running = false; }
+            }).observe(container);
+        }
+
+        build();
+        requestAnimationFrame(frame);
     }
 
     function initCanvasOrganism(container) {
