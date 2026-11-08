@@ -98,8 +98,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         initParticleField(glanceBg, {
             stops: [[99, 123, 230], [99, 123, 230]],
             sizeScale: 1.13,
-            countScale: 1.3,
-            radius: (w, h, mobile) => Math.min(mobile ? 420 : 780, Math.max(w * 0.55, h * 0.95))
+            countScale: 1.15,
+            radius: (w, h, mobile) => Math.min(mobile ? 340 : 640, Math.max(w * 0.46, h * 0.82))
         }); // one solid brand blue
     }
 
