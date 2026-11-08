@@ -15,34 +15,40 @@
     <link rel="stylesheet" href="styles.css?v=1794173468">
     <style>
         [hidden] { display: none !important; }
-        .pl-title { font-family: var(--font-heading); text-align: center; color: #111827; margin: 0 0 1.25rem; }
-        .pl-sub { text-align: center; color: var(--text-muted); font-size: 1.15rem; max-width: 620px; margin: 0 auto; line-height: 1.6; }
+        .pl-title { font-family: var(--font-heading); text-align: center; color: #111827; margin: 0; }
 
-        .pl-stats-card { margin: 4rem 0 3rem !important; min-height: 0 !important; padding: 5.5rem 0 !important; }
-
-        .pl-filters { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin: 0 0 3rem; }
-        .pl-chip {
-            border: 1px solid #e3e3e8; background: #fff; color: #374151; border-radius: 999px;
-            padding: 0.5rem 1.1rem; font: 500 0.92rem var(--font-sans); cursor: pointer;
-            transition: background .2s ease, color .2s ease, border-color .2s ease;
+        /* Scrolling logo strip */
+        .pl-marquee {
+            position: relative; overflow: hidden; margin: 4.5rem calc(50% - 50vw) 5rem; padding: 0.5rem 0;
+            -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+            mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
         }
-        .pl-chip:hover { border-color: #c9c9d1; }
-        .pl-chip.active { background: var(--brand-indigo); border-color: var(--brand-indigo); color: #fff; }
+        .pl-track { display: flex; align-items: center; gap: 4.5rem; width: max-content; animation: plScroll 40s linear infinite; }
+        .pl-marquee:hover .pl-track { animation-play-state: paused; }
+        .pl-track .pl-logo { height: 38px; flex: none; display: flex; align-items: center; }
+        .pl-track img { height: 100%; width: auto; max-width: 170px; object-fit: contain; filter: grayscale(1); opacity: .65; transition: opacity .3s ease, filter .3s ease; }
+        .pl-track .pl-logo:hover img { filter: none; opacity: 1; }
+        @keyframes plScroll { to { transform: translateX(-50%); } }
 
-        .pl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 6rem; }
-        .pl-card {
-            background: #fafafa; border: 1px solid #ececef; border-radius: 24px; padding: 1.6rem 1.6rem 1.4rem;
+        /* Wordmark fallback when a logo file is missing */
+        .pl-word { font-family: var(--font-heading); font-weight: 600; font-size: 1.35rem; letter-spacing: -0.02em; color: #374151; white-space: nowrap; text-align: center; line-height: 1.1; }
+
+        /* Tombstones */
+        .pl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.25rem; margin-bottom: 7rem; }
+        .pl-stone {
+            display: flex; flex-direction: column; background: #fafafa; border: 1px solid #ececef; border-radius: 20px; overflow: hidden;
             transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
         }
-        .pl-card:hover { transform: translateY(-4px); background: #fff; box-shadow: 0 18px 40px -22px rgba(10, 25, 47, .35); }
-        .pl-firm { font-family: var(--font-heading); font-size: 1.5rem; letter-spacing: -0.02em; color: #111827; margin: 0 0 0.25rem; font-weight: 450; }
-        .pl-cat { color: #6b7280; font-size: 0.9rem; margin: 0 0 1.1rem; }
-        .pl-list { list-style: none; margin: 0; padding: 0.9rem 0 0; border-top: 1px solid #ececef; }
-        .pl-list li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.25rem 0; font-size: 0.95rem; color: #374151; }
-        .pl-list li span:last-child { color: #9ca3af; white-space: nowrap; }
+        .pl-stone:hover { transform: translateY(-4px); background: #fff; box-shadow: 0 18px 40px -22px rgba(10, 25, 47, .35); }
+        .pl-stone-logo { height: 150px; display: flex; align-items: center; justify-content: center; padding: 1.5rem 2rem; }
+        .pl-stone-logo img { max-height: 64px; max-width: 78%; object-fit: contain; }
+        .pl-stone-logo .pl-word { font-size: 1.6rem; }
+        .pl-stone-tag { border-top: 1px solid #ececef; padding: 0.95rem 1rem; text-align: center; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #4b5563; }
 
         .pl-empty { text-align: center; padding: 5rem 1rem 8rem; color: var(--text-muted); }
         .pl-empty h2 { font-size: var(--h2-size); margin-bottom: 0.75rem; }
+
+        @media (prefers-reduced-motion: reduce) { .pl-track { animation: none; } }
     </style>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
@@ -87,39 +93,14 @@
 
     <main class="page-wrapper container">
         <div class="page-header fade-up" style="margin-bottom: 0;">
-            <h1 class="pl-title">Where Our Members Go</h1>
-            <p class="pl-sub">Vertige alumni and members have gone on to roles across investment banking, private equity, asset management, consulting and more.</p>
+            <h1 class="pl-title">Past Placements</h1>
         </div>
 
         <div id="plEmpty" class="pl-empty" hidden>
             <h2>Placements coming soon</h2>
-            <p>We are compiling our alumni and placements list. Check back shortly.</p>
         </div>
 
-        <div id="plStats" class="impact-section pl-stats-card" hidden>
-            <div id="glance-bg" class="glance-bg" aria-hidden="true"></div>
-            <div class="container impact-inner">
-                <div class="impact-grid">
-                    <div class="impact-stat">
-                        <div class="impact-value"><span class="counter" id="plStatPeople" data-target="0">0</span></div>
-                        <div class="impact-label" style="color: #ffffff;">Members Placed</div>
-                        <div class="impact-bar"></div>
-                    </div>
-                    <div class="impact-stat">
-                        <div class="impact-value"><span class="counter" id="plStatFirms" data-target="0">0</span></div>
-                        <div class="impact-label" style="color: #ffffff;">Firms</div>
-                        <div class="impact-bar" style="transition-delay: 0.1s"></div>
-                    </div>
-                    <div class="impact-stat">
-                        <div class="impact-value"><span class="counter" id="plStatCats" data-target="0">0</span></div>
-                        <div class="impact-label" style="color: #ffffff;">Industries</div>
-                        <div class="impact-bar" style="transition-delay: 0.2s"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="plFilters" class="pl-filters"></div>
+        <div id="plMarquee" class="pl-marquee" hidden><div id="plTrack" class="pl-track"></div></div>
         <div id="plGrid" class="pl-grid"></div>
     </main>
 
@@ -190,42 +171,27 @@
     <script>
         (function () {
             var data = (window.VIG_PLACEMENTS || []).filter(function (p) { return p && p.firm; });
-            var empty = document.getElementById('plEmpty');
-            if (!data.length) { empty.hidden = false; document.getElementById('plFilters').hidden = true; return; }
+            if (!data.length) { document.getElementById('plEmpty').hidden = false; return; }
 
-            var firms = {}, cats = {}, people = {};
-            data.forEach(function (p) {
-                var f = firms[p.firm] || (firms[p.firm] = { name: p.firm, category: p.category || 'Other', items: [] });
-                f.items.push(p);
-                cats[f.category] = true;
-                people[p.name || (p.firm + '|' + p.role + '|' + p.year)] = true;
-            });
-            var firmList = Object.keys(firms).map(function (k) { return firms[k]; })
-                .sort(function (a, b) { return b.items.length - a.items.length || a.name.localeCompare(b.name); });
-
-            var stats = document.getElementById('plStats'); stats.hidden = false;
-            document.getElementById('plStatPeople').setAttribute('data-target', Object.keys(people).length);
-            document.getElementById('plStatFirms').setAttribute('data-target', firmList.length);
-            document.getElementById('plStatCats').setAttribute('data-target', Object.keys(cats).length);
-
-            var grid = document.getElementById('plGrid'), bar = document.getElementById('plFilters');
             function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-            function render(cat) {
-                grid.innerHTML = firmList.filter(function (f) { return cat === 'All' || f.category === cat; }).map(function (f) {
-                    var rows = f.items.map(function (i) {
-                        return '<li><span>' + esc(i.name ? i.name + (i.role ? ', ' + i.role : '') : (i.role || 'Member')) + '</span><span>' + esc(i.year || '') + '</span></li>';
-                    }).join('');
-                    return '<div class="pl-card"><h3 class="pl-firm">' + esc(f.name) + '</h3><p class="pl-cat">' + esc(f.category) + '</p><ul class="pl-list">' + rows + '</ul></div>';
-                }).join('');
+            // a logo image if one is provided, otherwise the firm name as a clean wordmark
+            function logo(p) {
+                if (!p.logo) return '<span class="pl-word">' + esc(p.firm) + '</span>';
+                return '<img src="' + esc(p.logo) + '" alt="' + esc(p.firm) + '" loading="lazy" onerror="var s=document.createElement(\'span\');s.className=\'pl-word\';s.textContent=this.alt;this.replaceWith(s)">';
             }
-            var names = ['All'].concat(Object.keys(cats).sort());
-            bar.innerHTML = names.map(function (n, i) { return '<button class="pl-chip' + (i ? '' : ' active') + '" data-cat="' + esc(n) + '">' + esc(n) + '</button>'; }).join('');
-            bar.addEventListener('click', function (e) {
-                var b = e.target.closest('.pl-chip'); if (!b) return;
-                bar.querySelectorAll('.pl-chip').forEach(function (c) { c.classList.toggle('active', c === b); });
-                render(b.getAttribute('data-cat'));
-            });
-            render('All');
+
+            // scrolling strip: each firm once, repeated so the loop is seamless
+            var seen = {}, unique = data.filter(function (p) { return seen[p.firm] ? false : (seen[p.firm] = true); });
+            var strip = unique.map(function (p) { return '<div class="pl-logo">' + logo(p) + '</div>'; }).join('');
+            var reps = Math.max(2, Math.ceil(12 / unique.length));
+            reps += reps % 2; // even count so translating by 50% loops exactly
+            document.getElementById('plTrack').innerHTML = new Array(reps + 1).join(strip);
+            document.getElementById('plMarquee').hidden = false;
+
+            // tombstones: logo on top, placement underneath
+            document.getElementById('plGrid').innerHTML = data.map(function (p) {
+                return '<div class="pl-stone"><div class="pl-stone-logo">' + logo(p) + '</div><div class="pl-stone-tag">' + esc(p.placement || '') + '</div></div>';
+            }).join('');
         })();
     </script>
     <script src="script.js?v=1794172956"></script>
