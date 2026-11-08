@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.lineCap = 'round';
             ctx.lineWidth = 3;
+            first = true;
 
             const mobile = width < 700;
             baseR = Math.min(mobile ? 300 : 640, Math.min(width, height) * 0.62);
@@ -163,8 +164,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         }
 
+        let bx0 = 0, by0 = 0, bx1 = 0, by1 = 0, first = true;
         function draw(t) {
-            ctx.clearRect(0, 0, width, height);
+            // clear only the area the blob occupied last frame instead of the whole tall canvas
+            if (first) { ctx.clearRect(0, 0, width, height); first = false; }
+            else ctx.clearRect(bx0, by0, bx1 - bx0, by1 - by0);
+            let nx0 = 1e9, ny0 = 1e9, nx1 = -1e9, ny1 = -1e9;
+            for (let i = 0; i < count; i++) {
+                if (x[i] < nx0) nx0 = x[i];
+                if (x[i] > nx1) nx1 = x[i];
+                if (y[i] < ny0) ny0 = y[i];
+                if (y[i] > ny1) ny1 = y[i];
+            }
+            bx0 = nx0 - 12; by0 = ny0 - 12; bx1 = nx1 + 12; by1 = ny1 + 12;
             const n = lists.n;
             n.fill(0);
             // colour wave: a band of colour sweeps around the blob and ripples outward

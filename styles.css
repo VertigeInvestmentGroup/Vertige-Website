@@ -477,6 +477,13 @@ h6 {
     background-color: var(--bg-main);
 }
 
+/* Perf: no live backdrop blur over the animated landing page (the bar is already 95% opaque) */
+.navbar.scrolled {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.97);
+}
+
 /* Landing about section: centred, airy, Antigravity-inspired layout */
 .sphere-section {
     height: auto;
