@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!blob.x) { blob.x = width * 0.5; blob.y = height * 0.5; }
             const golden = 2.399963;
             for (let i = 0; i < count; i++) {
-                u[i] = Math.pow((i + 0.5) / count, 0.42); // weighted toward the circumference
+                u[i] = Math.pow((i + 0.5) / count, 0.32); // weighted toward the circumference
                 ang[i] = i * golden;
                 ph[i] = Math.random() * 6.283;
                 kk[i] = 0.03 + Math.random() * 0.06; // varied stiffness gives a trailing swarm
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // point at the blob centre
                     const ddx = x[i] - blob.x, ddy = y[i] - blob.y;
                     const dl = Math.hypot(ddx, ddy) || 1;
-                    const hl = len[i] * 0.5 * sc[i] * (0.3 + 0.7 * u[i]); // smaller toward the centre
+                    const hl = len[i] * 0.5 * sc[i] * (0.08 + 0.92 * u[i] * u[i]); // smaller toward the centre
                     const dx = ddx / dl * hl, dy = ddy / dl * hl;
                     ctx.moveTo(x[i] - dx, y[i] - dy);
                     ctx.lineTo(x[i] + dx, y[i] + dy);
