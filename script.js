@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const COLORS = ['#4a63e6', '#9a52b8', '#e0475f', '#f59a23', '#f4c20d'];
-        const WIDTHS = [1.1, 1.8, 2.5];
+        const WIDTHS = [2, 2];
         const NB = COLORS.length * WIDTHS.length;
 
         let width = 0, height = 0, dpr = 1, count = 0, baseR = 200;
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const mobile = width < 700;
             baseR = Math.min(mobile ? 170 : 260, Math.min(width, height) * 0.36);
-            count = mobile ? 520 : 900;
+            count = mobile ? 260 : 440;
             [u, ang, ph, spd, kk, len, x, y, vx, vy, dir] = Array.from({ length: 11 }, () => new Float32Array(count));
             const bk = new Uint8Array(count);
             buckets = Array.from({ length: NB }, () => []);
@@ -150,9 +150,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 spd[i] = 0.6 + Math.random() * 1.2;
                 kk[i] = 0.03 + Math.random() * 0.06; // different stiffness gives a trailing swarm
                 const bell = Math.exp(-Math.pow((t - 0.55) / 0.35, 2));
-                const big = Math.random() < 0.3 + 0.55 * bell;
-                len[i] = big ? 3 + 5 * bell + Math.random() * 1.5 : 0.2;
-                const wi = !big ? 0 : (bell > 0.6 ? 2 : 1);
+                const big = Math.random() < 0.85;
+                len[i] = big ? 2.6 + Math.random() * 1.4 : 0.2;
+                const wi = big ? 1 : 0;
                 let c = 0.5 + 0.5 * Math.cos(ang[i] + Math.PI * 0.75);
                 c = Math.min(0.999, Math.max(0, c + (Math.random() - 0.5) * 0.3));
                 bk[i] = (COLORS.length - 1 - Math.floor(c * COLORS.length)) * WIDTHS.length + wi;
@@ -170,13 +170,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (!list.length) continue;
                 const wi = b % WIDTHS.length;
                 ctx.strokeStyle = COLORS[(b / WIDTHS.length) | 0];
-                ctx.globalAlpha = wi === 0 ? 0.6 : 0.95;
+                ctx.globalAlpha = 0.9;
                 ctx.lineWidth = WIDTHS[wi];
                 ctx.beginPath();
                 for (let k = 0; k < list.length; k++) {
                     const i = list[k];
                     const sp = Math.min(Math.abs(vx[i]) + Math.abs(vy[i]), 10);
-                    const hl = len[i] * 0.5 * (1 + sp * 0.12);
+                    const hl = len[i] * 0.5 * (1 + sp * 0.04);
                     const dx = Math.cos(dir[i]) * hl, dy = Math.sin(dir[i]) * hl;
                     ctx.moveTo(x[i] - dx, y[i] - dy);
                     ctx.lineTo(x[i] + dx, y[i] + dy);
