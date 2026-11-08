@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             n.fill(0);
             // colour wave: a band of colour sweeps around the blob and ripples outward
             for (let i = 0; i < count; i++) {
-                const w = 0.5 + 0.5 * Math.sin(ang[i] - t * 0.5 + u[i] * 3.2);
+                const w = 0.5 + 0.5 * Math.sin(ang[i] - t * 0.7 + u[i] * 3.2);
                 const k = Math.min(NC - 1, (w * NC) | 0);
                 lists[k][n[k]++] = i;
             }
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 tx = width * (0.5 + 0.07 * Math.sin(t * 0.25));
                 ty = height * (0.5 + 0.05 * Math.sin(t * 0.19 + 1.3));
             }
-            const bf = 1 - Math.pow(1 - 0.035, f);
+            const bf = 1 - Math.pow(1 - 0.018, f);
             blob.vx += ((tx - blob.x) * bf - blob.vx) * 0.5;
             blob.vy += ((ty - blob.y) * bf - blob.vy) * 0.5;
             blob.x += blob.vx; blob.y += blob.vy;
@@ -215,8 +215,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             for (let i = 0; i < count; i++) {
                 const a = ang[i];
                 // gentle undulating outline plus ripples travelling outward through the blob
-                const shape = 1 + 0.015 * Math.sin(2 * a + t * 0.4) + 0.01 * Math.sin(3 * a - t * 0.5);
-                const ripple = 1 + 0.05 * Math.sin(u[i] * 9 - t * 1.2);
+                const shape = 1 + 0.03 * Math.sin(2 * a + t * 0.7) + 0.02 * Math.sin(3 * a - t * 0.9);
+                const ripple = 1 + 0.08 * Math.sin(u[i] * 9 - t * 1.9);
                 const r = u[i] * baseR * pulse * shape * ripple;
                 const tx2 = blob.x + Math.cos(a) * r;
                 const ty2 = blob.y + Math.sin(a) * r;
