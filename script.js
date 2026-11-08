@@ -102,10 +102,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- Landing page: interactive particle field ---
-    // A phyllotaxis-style radial scatter of multicoloured dashes and dots. Dashes point away
-    // from the centre, colours blend by direction, and the cursor carves out an empty zone
-    // where dashes swing to face away from it. Drawing is batched per colour/size for speed.
+    // --- Landing page: cursor-following blob of dashes ---
+    // A living cloud of small multicoloured dashes forms a soft blob that trails the cursor
+    // (and wanders on its own when the cursor is away). The blob pulses and its outline
+    // undulates; every dash springs toward its slot, wobbles, and stretches along its motion.
     function initParticleField(container) {
         const canvas = document.createElement('canvas');
         canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
@@ -113,15 +113,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         const ctx = canvas.getContext('2d', { alpha: true });
 
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const COLORS = ['#4a63e6', '#9a52b8', '#e0475f', '#f59a23', '#f4c20d']; // blue, purple, red, orange, yellow
+        const COLORS = ['#4a63e6', '#9a52b8', '#e0475f', '#f59a23', '#f4c20d'];
         const WIDTHS = [1.1, 1.8, 2.5];
         const NB = COLORS.length * WIDTHS.length;
 
-        let width = 0, height = 0, dpr = 1, count = 0;
-        let hx, hy, x, y, vx, vy, len, ca, sa, bucket, ph;
+        let width = 0, height = 0, dpr = 1, count = 0, baseR = 200;
+        let u, ang, ph, spd, kk, len, x, y, vx, vy, dir;
         let buckets = [];
         let rect = container.getBoundingClientRect();
-        const mouse = { x: -9999, y: -9999, sx: -9999, sy: -9999, active: false };
+        const mouse = { x: 0, y: 0, active: false };
+        const blob = { x: 0, y: 0, vx: 0, vy: 0 };
         let running = true, rafId = 0, last = 0;
 
         function build() {
@@ -134,41 +135,34 @@ document.addEventListener("DOMContentLoaded", async () => {
             ctx.lineCap = 'round';
 
             const mobile = width < 700;
-            count = Math.min(mobile ? 650 : 1500, Math.round(width * height / (mobile ? 700 : 950)));
-            hx = new Float32Array(count); hy = new Float32Array(count);
-            x = new Float32Array(count); y = new Float32Array(count);
-            vx = new Float32Array(count); vy = new Float32Array(count);
-            len = new Float32Array(count); ca = new Float32Array(count); sa = new Float32Array(count);
-            ph = new Float32Array(count); bucket = new Uint8Array(count);
+            baseR = Math.min(mobile ? 170 : 260, Math.min(width, height) * 0.36);
+            count = mobile ? 520 : 900;
+            [u, ang, ph, spd, kk, len, x, y, vx, vy, dir] = Array.from({ length: 11 }, () => new Float32Array(count));
+            const bk = new Uint8Array(count);
             buckets = Array.from({ length: NB }, () => []);
-
-            const cx = width / 2, cy = height / 2;
-            const rx = width * 0.56, ry = height * 0.62;
+            if (!blob.x) { blob.x = width * 0.5; blob.y = height * 0.5; }
             const golden = 2.399963;
-            const blueDir = -Math.PI * 0.75; // blue toward the top-left, warm toward the bottom-right
             for (let i = 0; i < count; i++) {
                 const t = Math.sqrt((i + 0.5) / count);
-                const a = i * golden;
-                const px = cx + Math.cos(a) * rx * t;
-                const py = cy + Math.sin(a) * ry * t;
-                hx[i] = x[i] = px; hy[i] = y[i] = py;
-                const ang = Math.atan2(py - cy, px - cx);
-                ca[i] = Math.cos(ang); sa[i] = Math.sin(ang);
+                u[i] = t;
+                ang[i] = i * golden;
                 ph[i] = Math.random() * 6.283;
-                // bell-shaped size: tiny dots near the centre and far edge, bigger dashes in between
-                const bell = Math.exp(-Math.pow((t - 0.62) / 0.3, 2));
-                const big = Math.random() < 0.35 + 0.5 * bell;
-                len[i] = big ? 2.5 + 5.5 * bell + Math.random() * 1.5 : 0.2;
+                spd[i] = 0.6 + Math.random() * 1.2;
+                kk[i] = 0.03 + Math.random() * 0.06; // different stiffness gives a trailing swarm
+                const bell = Math.exp(-Math.pow((t - 0.55) / 0.35, 2));
+                const big = Math.random() < 0.3 + 0.55 * bell;
+                len[i] = big ? 3 + 5 * bell + Math.random() * 1.5 : 0.2;
                 const wi = !big ? 0 : (bell > 0.6 ? 2 : 1);
-                let c = 0.5 + 0.5 * Math.cos(Math.atan2(py - cy, px - cx) - blueDir);
-                c = Math.min(0.999, Math.max(0, c + (Math.random() - 0.5) * 0.25));
-                const ci = COLORS.length - 1 - Math.floor(c * COLORS.length);
-                bucket[i] = ci * WIDTHS.length + wi;
-                buckets[bucket[i]].push(i);
+                let c = 0.5 + 0.5 * Math.cos(ang[i] + Math.PI * 0.75);
+                c = Math.min(0.999, Math.max(0, c + (Math.random() - 0.5) * 0.3));
+                bk[i] = (COLORS.length - 1 - Math.floor(c * COLORS.length)) * WIDTHS.length + wi;
+                buckets[bk[i]].push(i);
+                x[i] = blob.x; y[i] = blob.y;
+                dir[i] = ang[i];
             }
-            // tiny dots are paler so the dashes read as the focus
         }
 
+        let ca, sa;
         function draw() {
             ctx.clearRect(0, 0, width, height);
             for (let b = 0; b < NB; b++) {
@@ -176,13 +170,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (!list.length) continue;
                 const wi = b % WIDTHS.length;
                 ctx.strokeStyle = COLORS[(b / WIDTHS.length) | 0];
-                ctx.globalAlpha = wi === 0 ? 0.55 : 0.95;
+                ctx.globalAlpha = wi === 0 ? 0.6 : 0.95;
                 ctx.lineWidth = WIDTHS[wi];
                 ctx.beginPath();
                 for (let k = 0; k < list.length; k++) {
                     const i = list[k];
-                    const hl = len[i] * 0.5;
-                    const dx = ca[i] * hl, dy = sa[i] * hl;
+                    const sp = Math.min(Math.abs(vx[i]) + Math.abs(vy[i]), 10);
+                    const hl = len[i] * 0.5 * (1 + sp * 0.12);
+                    const dx = Math.cos(dir[i]) * hl, dy = Math.sin(dir[i]) * hl;
                     ctx.moveTo(x[i] - dx, y[i] - dy);
                     ctx.lineTo(x[i] + dx, y[i] + dy);
                 }
@@ -195,52 +190,44 @@ document.addEventListener("DOMContentLoaded", async () => {
             const dt = Math.min(now - (last || now), 50);
             last = now;
             const f = dt / 16.667;
-            // smooth the cursor so the clearing glides instead of jumping
-            const follow = 1 - Math.pow(0.001, dt / 1000 * 1.0);
-            if (mouse.active) {
-                if (mouse.sx < -9000) { mouse.sx = mouse.x; mouse.sy = mouse.y; }
-                mouse.sx += (mouse.x - mouse.sx) * follow;
-                mouse.sy += (mouse.y - mouse.sy) * follow;
+            const t = now * 0.001;
+
+            // blob centre: follows the cursor with a soft lag, or drifts on its own
+            let tx, ty;
+            if (mouse.active) { tx = mouse.x; ty = mouse.y; }
+            else {
+                tx = width * (0.5 + 0.22 * Math.sin(t * 0.5));
+                ty = height * (0.5 + 0.18 * Math.sin(t * 0.37 + 1.3));
             }
-            const R = Math.min(210, Math.max(130, width * 0.14));
-            const R2 = R * R;
-            const spring = 0.05 * f, damp = Math.pow(0.84, f);
-            const t = now * 0.0004;
-            const mx = mouse.sx, my = mouse.sy, on = mouse.active;
+            const bf = 1 - Math.pow(1 - 0.07, f);
+            blob.vx += ((tx - blob.x) * bf - blob.vx) * 0.5;
+            blob.vy += ((ty - blob.y) * bf - blob.vy) * 0.5;
+            blob.x += blob.vx; blob.y += blob.vy;
+
+            const pulse = 1 + 0.09 * Math.sin(t * 2.4) + 0.04 * Math.sin(t * 5.1);
+            const damp = Math.pow(0.8, f);
             for (let i = 0; i < count; i++) {
-                const tx = hx[i] + Math.sin(t + ph[i]) * 2.5;
-                const ty = hy[i] + Math.cos(t * 1.1 + ph[i]) * 2.5;
-                vx[i] += (tx - x[i]) * spring;
-                vy[i] += (ty - y[i]) * spring;
-                let tca = 0, tsa = 0, near = 0;
-                if (on) {
-                    const dx = x[i] - mx, dy = y[i] - my;
-                    const d2 = dx * dx + dy * dy;
-                    if (d2 < R2 && d2 > 0.01) {
-                        const d = Math.sqrt(d2);
-                        near = 1 - d / R;
-                        const push = near * near * 9 * f;
-                        vx[i] += dx / d * push;
-                        vy[i] += dy / d * push;
-                        tca = dx / d; tsa = dy / d;
-                    }
-                }
+                const a = ang[i];
+                // undulating, pulsing outline
+                const shape = 1 + 0.13 * Math.sin(2 * a + t * 0.9) + 0.09 * Math.sin(3 * a - t * 1.3) + 0.05 * Math.sin(5 * a + t * 1.9);
+                // dashes breathe in and out individually so nothing sits still
+                const r = u[i] * baseR * pulse * shape + Math.sin(t * spd[i] * 2 + ph[i]) * 7;
+                const tx2 = blob.x + Math.cos(a + Math.sin(t * 0.4 + ph[i]) * 0.08) * r;
+                const ty2 = blob.y + Math.sin(a + Math.sin(t * 0.4 + ph[i]) * 0.08) * r;
+                const k = kk[i] * f;
+                vx[i] += (tx2 - x[i]) * k;
+                vy[i] += (ty2 - y[i]) * k;
                 vx[i] *= damp; vy[i] *= damp;
                 x[i] += vx[i] * f; y[i] += vy[i] * f;
-                if (near > 0) {
-                    // swing toward pointing away from the cursor (shortest way round)
-                    const k = Math.min(1, 0.25 * f + near * 0.4);
-                    ca[i] += (tca - ca[i]) * k; sa[i] += (tsa - sa[i]) * k;
-                    const m = 1 / Math.hypot(ca[i], sa[i]);
-                    ca[i] *= m; sa[i] *= m;
-                } else if (Math.abs(vx[i]) + Math.abs(vy[i]) < 0.05) {
-                    // relax back toward the radial direction when at rest
-                    const cx = width / 2, cy = height / 2;
-                    const rx = hx[i] - cx, ry = hy[i] - cy;
-                    const rl = Math.hypot(rx, ry) || 1;
-                    ca[i] += (rx / rl - ca[i]) * 0.06 * f;
-                    sa[i] += (ry / rl - sa[i]) * 0.06 * f;
+                // radial orientation, twisting and wobbling over time, leaning into motion
+                let d = a + Math.sin(t * spd[i] * 1.6 + ph[i]) * 0.5 + t * 0.15;
+                const sp = Math.abs(vx[i]) + Math.abs(vy[i]);
+                if (sp > 0.8) {
+                    const m = Math.atan2(vy[i], vx[i]);
+                    let diff = m - d; diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+                    d += diff * Math.min(0.7, sp * 0.12);
                 }
+                dir[i] = d;
             }
             draw();
             rafId = requestAnimationFrame(frame);
@@ -251,25 +238,24 @@ document.addEventListener("DOMContentLoaded", async () => {
             running = true; last = 0;
             rafId = requestAnimationFrame(frame);
         }
-
         function setMouse(cx, cy) {
             mouse.x = cx - rect.left; mouse.y = cy - rect.top;
-            mouse.active = mouse.x >= -50 && mouse.x <= width + 50 && mouse.y >= -50 && mouse.y <= height + 50;
+            mouse.active = mouse.x >= -80 && mouse.x <= width + 80 && mouse.y >= -80 && mouse.y <= height + 80;
         }
         window.addEventListener('mousemove', e => setMouse(e.clientX, e.clientY), { passive: true });
         window.addEventListener('touchmove', e => { if (e.touches[0]) setMouse(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-        document.addEventListener('mouseleave', () => { mouse.active = false; mouse.sx = -9999; });
+        document.addEventListener('mouseleave', () => { mouse.active = false; });
         window.addEventListener('scroll', () => { rect = container.getBoundingClientRect(); setMouse(mouse.x + rect.left, mouse.y + rect.top); }, { passive: true });
         let rt;
         window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); draw(); }, 150); });
 
         build();
+        for (let i = 0; i < count; i++) dir[i] = ang[i];
         draw();
         if (!reduceMotion) {
             if ('IntersectionObserver' in window) {
                 new IntersectionObserver(entries => {
-                    if (entries[0].isIntersecting) start();
-                    else { running = false; }
+                    if (entries[0].isIntersecting) start(); else running = false;
                 }).observe(container);
             }
             start();
