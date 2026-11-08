@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             [u, ang, ph, kk, len, x, y, vx, vy, sc] = Array.from({ length: 10 }, () => new Float32Array(count));
             lists = Array.from({ length: NC * 3 }, () => new Uint16Array(count));
             lists.n = new Uint16Array(NC * 3);
-            if (!blob.x) { blob.x = width * 0.5; blob.y = height * 0.5; }
+            if (!blob.x) { blob.x = blob.vx = width * 0.5; blob.y = blob.vy = height * 0.5; }
             const golden = 2.399963;
             for (let i = 0; i < count; i++) {
                 u[i] = Math.pow((i + 0.5) / count, 0.45); // filled centre, slightly weighted outward
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const i = list[m];
                     // point at the blob centre
                     const ddx = x[i] - blob.x, ddy = y[i] - blob.y;
-                    const dl = Math.hypot(ddx, ddy) || 1;
+                    const dl = Math.sqrt(ddx * ddx + ddy * ddy) || 1;
                     const hl = len[i] * 0.5 * sc[i] * (0.04 + 0.96 * Math.pow(u[i], 2.6)); // smaller toward the centre
                     const dx = ddx / dl * hl, dy = ddy / dl * hl;
                     ctx.moveTo(x[i] - dx, y[i] - dy);
@@ -211,10 +211,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 tx = width * (0.5 + 0.07 * Math.sin(t * 0.25));
                 ty = height * (0.5 + 0.05 * Math.sin(t * 0.19 + 1.3));
             }
-            const bf = 1 - Math.pow(1 - 0.018, f);
-            blob.vx += ((tx - blob.x) * bf - blob.vx) * 0.5;
-            blob.vy += ((ty - blob.y) * bf - blob.vy) * 0.5;
-            blob.x += blob.vx; blob.y += blob.vy;
+            // two-stage exponential easing, independent of frame rate, so motion stays silky on 60/120/144Hz screens
+            const e1 = 1 - Math.exp(-dt / 480), e2 = 1 - Math.exp(-dt / 420);
+            blob.vx += (tx - blob.vx) * e1; blob.vy += (ty - blob.vy) * e1; // eased target
+            blob.x += (blob.vx - blob.x) * e2; blob.y += (blob.vy - blob.y) * e2;
 
             const pulse = 1 + 0.03 * Math.sin(t * 0.7);
             const damp = Math.pow(0.8, f);
