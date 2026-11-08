@@ -116,6 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // palette from the Vertige brand: navy -> brand blue -> gold, and back again
         const STOPS = [[17, 34, 64], [60, 84, 170], [99, 123, 230], [214, 168, 150], [229, 176, 114]]; // Vertige navy, brand blue, gold
         const NC = 16;
+        const TIER_W = [1.3, 2.1, 3];
         const PALETTE = [];
         for (let k = 0; k < NC; k++) {
             const q = k / NC * 2; // 0..2 over the loop
@@ -148,12 +149,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             baseR = Math.min(mobile ? 300 : 640, Math.min(width, height) * 0.62);
             count = mobile ? 190 : 330;
             [u, ang, ph, kk, len, x, y, vx, vy, sc] = Array.from({ length: 10 }, () => new Float32Array(count));
-            lists = Array.from({ length: NC }, () => new Uint16Array(count));
-            lists.n = new Uint16Array(NC);
+            lists = Array.from({ length: NC * 3 }, () => new Uint16Array(count));
+            lists.n = new Uint16Array(NC * 3);
             if (!blob.x) { blob.x = width * 0.5; blob.y = height * 0.5; }
             const golden = 2.399963;
             for (let i = 0; i < count; i++) {
-                u[i] = 0.55 + 0.45 * Math.pow((i + 0.5) / count, 0.5); // open centre; dashes sit toward the circumference
+                u[i] = Math.pow((i + 0.5) / count, 0.45); // filled centre, slightly weighted outward
                 ang[i] = i * golden;
                 ph[i] = Math.random() * 6.283;
                 kk[i] = 0.03 + Math.random() * 0.06; // varied stiffness gives a trailing swarm
@@ -169,13 +170,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             // colour wave: a band of colour sweeps around the blob and ripples outward
             for (let i = 0; i < count; i++) {
                 const w = 0.5 + 0.5 * Math.sin(Math.cos(ang[i]) * u[i] * 1.7 - t * 0.6); // one smooth gradient sweeping left to right
-                const k = Math.min(NC - 1, (w * NC) | 0);
+                const k = Math.min(NC - 1, (w * NC) | 0) + NC * (u[i] < 0.4 ? 0 : (u[i] < 0.7 ? 1 : 2)); // thinner strokes toward the centre
                 lists[k][n[k]++] = i;
             }
             ctx.globalAlpha = 0.92;
-            for (let k = 0; k < NC; k++) {
+            for (let k = 0; k < NC * 3; k++) {
                 if (!n[k]) continue;
-                ctx.strokeStyle = PALETTE[k];
+                ctx.strokeStyle = PALETTE[k % NC];
+                ctx.lineWidth = TIER_W[(k / NC) | 0];
                 ctx.beginPath();
                 const list = lists[k];
                 for (let m = 0; m < n[k]; m++) {
@@ -183,7 +185,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // point at the blob centre
                     const ddx = x[i] - blob.x, ddy = y[i] - blob.y;
                     const dl = Math.hypot(ddx, ddy) || 1;
-                    const hl = len[i] * 0.5 * sc[i] * (0.08 + 0.92 * u[i] * u[i]); // smaller toward the centre
+                    const hl = len[i] * 0.5 * sc[i] * (0.04 + 0.96 * Math.pow(u[i], 2.6)); // smaller toward the centre
                     const dx = ddx / dl * hl, dy = ddy / dl * hl;
                     ctx.moveTo(x[i] - dx, y[i] - dy);
                     ctx.lineTo(x[i] + dx, y[i] + dy);
