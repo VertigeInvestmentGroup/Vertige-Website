@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Placements | Vertige Investment Group</title>
+    <meta name="robots" content="noindex">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300..700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=1794173468">
+    <style>
+        [hidden] { display: none !important; }
+        .pl-title { font-family: var(--font-heading); text-align: center; color: #111827; margin: 0 0 1.25rem; }
+        .pl-sub { text-align: center; color: var(--text-muted); font-size: 1.15rem; max-width: 620px; margin: 0 auto; line-height: 1.6; }
+
+        .pl-stats-card { margin: 4rem 0 3rem !important; min-height: 0 !important; padding: 5.5rem 0 !important; }
+
+        .pl-filters { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin: 0 0 3rem; }
+        .pl-chip {
+            border: 1px solid #e3e3e8; background: #fff; color: #374151; border-radius: 999px;
+            padding: 0.5rem 1.1rem; font: 500 0.92rem var(--font-sans); cursor: pointer;
+            transition: background .2s ease, color .2s ease, border-color .2s ease;
+        }
+        .pl-chip:hover { border-color: #c9c9d1; }
+        .pl-chip.active { background: var(--brand-indigo); border-color: var(--brand-indigo); color: #fff; }
+
+        .pl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 6rem; }
+        .pl-card {
+            background: #fafafa; border: 1px solid #ececef; border-radius: 24px; padding: 1.6rem 1.6rem 1.4rem;
+            transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+        }
+        .pl-card:hover { transform: translateY(-4px); background: #fff; box-shadow: 0 18px 40px -22px rgba(10, 25, 47, .35); }
+        .pl-firm { font-family: var(--font-heading); font-size: 1.5rem; letter-spacing: -0.02em; color: #111827; margin: 0 0 0.25rem; font-weight: 450; }
+        .pl-cat { color: #6b7280; font-size: 0.9rem; margin: 0 0 1.1rem; }
+        .pl-list { list-style: none; margin: 0; padding: 0.9rem 0 0; border-top: 1px solid #ececef; }
+        .pl-list li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.25rem 0; font-size: 0.95rem; color: #374151; }
+        .pl-list li span:last-child { color: #9ca3af; white-space: nowrap; }
+
+        .pl-empty { text-align: center; padding: 5rem 1rem 8rem; color: var(--text-muted); }
+        .pl-empty h2 { font-size: var(--h2-size); margin-bottom: 0.75rem; }
+    </style>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
+</head>
+
+<body>
+
+ <!-- Particles -->
+    </div>
+
+    <nav id="navbar" class="navbar scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="logo_transparent.png" alt="Vertige Logo" class="logo-img">
+                <div class="logo-text-wrapper">
+                    <span class="logo-text-primary">Vertige</span>
+                    <span class="logo-text-secondary">Investment Group</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="research.html">Research</a></li>
+                <li><a href="team.html">Team</a></li>
+            </ul>
+            <a href="join.html" class="btn btn-primary nav-cta">Join Vertige</a>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-close-btn" id="mobile-close-btn">&times;</div>
+        <a href="about.html">About Us</a>
+        <a href="research.html">Research</a>
+        <a href="team.html">Team</a>
+        <a href="join.html" class="mobile-cta">Join Vertige</a>
+    </div>
+
+
+
+    <main class="page-wrapper container">
+        <div class="page-header fade-up" style="margin-bottom: 0;">
+            <h1 class="pl-title">Where Our Members Go</h1>
+            <p class="pl-sub">Vertige alumni and members have gone on to roles across investment banking, private equity, asset management, consulting and more.</p>
+        </div>
+
+        <div id="plEmpty" class="pl-empty" hidden>
+            <h2>Placements coming soon</h2>
+            <p>We are compiling our alumni and placements list. Check back shortly.</p>
+        </div>
+
+        <div id="plStats" class="impact-section pl-stats-card" hidden>
+            <div id="glance-bg" class="glance-bg" aria-hidden="true"></div>
+            <div class="container impact-inner">
+                <div class="impact-grid">
+                    <div class="impact-stat">
+                        <div class="impact-value"><span class="counter" id="plStatPeople" data-target="0">0</span></div>
+                        <div class="impact-label" style="color: #ffffff;">Members Placed</div>
+                        <div class="impact-bar"></div>
+                    </div>
+                    <div class="impact-stat">
+                        <div class="impact-value"><span class="counter" id="plStatFirms" data-target="0">0</span></div>
+                        <div class="impact-label" style="color: #ffffff;">Firms</div>
+                        <div class="impact-bar" style="transition-delay: 0.1s"></div>
+                    </div>
+                    <div class="impact-stat">
+                        <div class="impact-value"><span class="counter" id="plStatCats" data-target="0">0</span></div>
+                        <div class="impact-label" style="color: #ffffff;">Industries</div>
+                        <div class="impact-bar" style="transition-delay: 0.2s"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="plFilters" class="pl-filters"></div>
+        <div id="plGrid" class="pl-grid"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo-col">
+                <a href="index.html" class="footer-logo">
+                    <img src="logo_white_transparent.png" alt="Vertige Logo">
+                    <div class="logo-text-wrapper">
+                        <span class="logo-text-primary">Vertige</span>
+                        <span class="logo-text-secondary">Investment Group</span>
+                    </div>
+                </a>
+            </div>
+            <div class="footer-links-wrapper">
+                <div class="footer-col">
+                    <h4>Our Team</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="team.html">Leadership</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Insights</h4>
+                    <a href="research.html">Research</a>
+                    <a href="https://www.linkedin.com/newsletters/7212272308051193857/" target="_blank">MarketPulse</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Careers</h4>
+                    <a href="join.html">Recruiting</a>
+                    <a href="#">Analyst Training</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <div class="footer-socials">
+                        <a href="https://ca.linkedin.com/company/vertige-investment-group" target="_blank"
+                            rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor" fill-rule="evenodd"
+                                    d="M3.86 8.926h3.341V20.57h-3.34zm1.586-1.457H5.42c-1.21 0-1.993-.89-1.993-2.017 0-1.15.807-2.023 2.04-2.023s1.991.87 2.016 2.02c0 1.127-.783 2.02-2.038 2.02M20.57 20.571h-3.79v-6.027c0-1.577-.592-2.653-1.895-2.653-.997 0-1.551.726-1.81 1.427-.096.25-.081.6-.081.952v6.301H9.241s.049-10.675 0-11.645h3.754v1.827c.222-.799 1.421-1.94 3.335-1.94 2.375 0 4.24 1.677 4.24 5.282z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/vertigeca" target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                style="width: 24px; height: 24px;">
+                                <path fill="currentColor"
+                                    d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6">
+                                </path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-legal-links">
+                <a href="disclosures.html">Regulatory Disclosures</a>
+            </div>
+            <div class="footer-copy">
+                &copy; 2026 Vertige Investment Group. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="placements-data.js"></script>
+    <script>
+        (function () {
+            var data = (window.VIG_PLACEMENTS || []).filter(function (p) { return p && p.firm; });
+            var empty = document.getElementById('plEmpty');
+            if (!data.length) { empty.hidden = false; document.getElementById('plFilters').hidden = true; return; }
+
+            var firms = {}, cats = {}, people = {};
+            data.forEach(function (p) {
+                var f = firms[p.firm] || (firms[p.firm] = { name: p.firm, category: p.category || 'Other', items: [] });
+                f.items.push(p);
+                cats[f.category] = true;
+                people[p.name || (p.firm + '|' + p.role + '|' + p.year)] = true;
+            });
+            var firmList = Object.keys(firms).map(function (k) { return firms[k]; })
+                .sort(function (a, b) { return b.items.length - a.items.length || a.name.localeCompare(b.name); });
+
+            var stats = document.getElementById('plStats'); stats.hidden = false;
+            document.getElementById('plStatPeople').setAttribute('data-target', Object.keys(people).length);
+            document.getElementById('plStatFirms').setAttribute('data-target', firmList.length);
+            document.getElementById('plStatCats').setAttribute('data-target', Object.keys(cats).length);
+
+            var grid = document.getElementById('plGrid'), bar = document.getElementById('plFilters');
+            function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+            function render(cat) {
+                grid.innerHTML = firmList.filter(function (f) { return cat === 'All' || f.category === cat; }).map(function (f) {
+                    var rows = f.items.map(function (i) {
+                        return '<li><span>' + esc(i.name ? i.name + (i.role ? ', ' + i.role : '') : (i.role || 'Member')) + '</span><span>' + esc(i.year || '') + '</span></li>';
+                    }).join('');
+                    return '<div class="pl-card"><h3 class="pl-firm">' + esc(f.name) + '</h3><p class="pl-cat">' + esc(f.category) + '</p><ul class="pl-list">' + rows + '</ul></div>';
+                }).join('');
+            }
+            var names = ['All'].concat(Object.keys(cats).sort());
+            bar.innerHTML = names.map(function (n, i) { return '<button class="pl-chip' + (i ? '' : ' active') + '" data-cat="' + esc(n) + '">' + esc(n) + '</button>'; }).join('');
+            bar.addEventListener('click', function (e) {
+                var b = e.target.closest('.pl-chip'); if (!b) return;
+                bar.querySelectorAll('.pl-chip').forEach(function (c) { c.classList.toggle('active', c === b); });
+                render(b.getAttribute('data-cat'));
+            });
+            render('All');
+        })();
+    </script>
+    <script src="script.js?v=1794172956"></script>
+</body>
+
+</html>
