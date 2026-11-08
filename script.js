@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         let width = 0, height = 0, dpr = 1, count = 0, baseR = 200;
-        let u, ang, ph, kk, len, x, y, vx, vy;
+        let u, ang, ph, kk, len, x, y, vx, vy, sc;
         let lists = [];
         let rect = container.getBoundingClientRect();
         const mouse = { x: 0, y: 0, active: false };
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const mobile = width < 700;
             baseR = Math.min(mobile ? 200 : 420, Math.min(width, height) * 0.46);
             count = mobile ? 190 : 330;
-            [u, ang, ph, kk, len, x, y, vx, vy] = Array.from({ length: 9 }, () => new Float32Array(count));
+            [u, ang, ph, kk, len, x, y, vx, vy, sc] = Array.from({ length: 10 }, () => new Float32Array(count));
             lists = Array.from({ length: NC }, () => new Uint16Array(count));
             lists.n = new Uint16Array(NC);
             if (!blob.x) { blob.x = width * 0.5; blob.y = height * 0.5; }
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ph[i] = Math.random() * 6.283;
                 kk[i] = 0.03 + Math.random() * 0.06; // varied stiffness gives a trailing swarm
                 len[i] = Math.random() < 0.85 ? 3.4 + Math.random() * 1.6 : 0.2;
-                x[i] = blob.x; y[i] = blob.y;
+                x[i] = blob.x; y[i] = blob.y; sc[i] = 1;
             }
         }
 
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     // point at the blob centre
                     const ddx = x[i] - blob.x, ddy = y[i] - blob.y;
                     const dl = Math.hypot(ddx, ddy) || 1;
-                    const hl = len[i] * 0.5;
+                    const hl = len[i] * 0.5 * sc[i];
                     const dx = ddx / dl * hl, dy = ddy / dl * hl;
                     ctx.moveTo(x[i] - dx, y[i] - dy);
                     ctx.lineTo(x[i] + dx, y[i] + dy);
@@ -216,7 +216,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const a = ang[i];
                 // gentle undulating outline plus ripples travelling outward through the blob
                 const shape = 1 + 0.03 * Math.sin(2 * a + t * 0.7) + 0.02 * Math.sin(3 * a - t * 0.9);
-                const ripple = 1 + 0.08 * Math.sin(u[i] * 9 - t * 1.9);
+                const wph = u[i] * 9 - t * 1.9;
+                const ripple = 1 + 0.08 * Math.sin(wph);
+                // dashes contract as the crest passes, lagging the wave a touch and eased for a natural feel
+                const sw = Math.sin(wph - 0.7 + ph[i] * 0.05);
+                sc[i] += ((1 - 0.3 * (0.5 + 0.5 * sw) ) - sc[i]) * Math.min(1, 0.15 * f);
                 const r = u[i] * baseR * pulse * shape * ripple;
                 const tx2 = blob.x + Math.cos(a) * r;
                 const ty2 = blob.y + Math.sin(a) * r;
