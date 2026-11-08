@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const a = ang[i];
                 // gentle undulating outline plus ripples travelling outward through the blob
                 const shape = 1 + 0.03 * Math.sin(2 * a + t * 0.7) + 0.02 * Math.sin(3 * a - t * 0.9);
-                const wph = u[i] * 9 - t * 1.9;
+                const wph = Math.cos(a) * u[i] * 5.5 - t * 1.9; // travels left to right across the blob
                 const ripple = 1 + 0.08 * Math.sin(wph);
                 // dashes contract as the crest passes, lagging the wave a touch and eased for a natural feel
                 const sw = Math.sin(wph - 0.7 + ph[i] * 0.05);
