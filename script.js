@@ -142,11 +142,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             canvas.height = Math.round(height * dpr);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.lineCap = 'round';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 3;
 
             const mobile = width < 700;
-            baseR = Math.min(mobile ? 170 : 260, Math.min(width, height) * 0.36);
-            count = mobile ? 260 : 440;
+            baseR = Math.min(mobile ? 240 : 480, Math.max(width, height) * (mobile ? 0.42 : 0.36));
+            count = mobile ? 190 : 330;
             [u, ang, ph, kk, len, x, y, vx, vy] = Array.from({ length: 9 }, () => new Float32Array(count));
             lists = Array.from({ length: NC }, () => new Uint16Array(count));
             lists.n = new Uint16Array(NC);
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ang[i] = i * golden;
                 ph[i] = Math.random() * 6.283;
                 kk[i] = 0.03 + Math.random() * 0.06; // varied stiffness gives a trailing swarm
-                len[i] = Math.random() < 0.85 ? 2.8 + Math.random() * 1.4 : 0.2;
+                len[i] = Math.random() < 0.85 ? 3.4 + Math.random() * 1.6 : 0.2;
                 x[i] = blob.x; y[i] = blob.y;
             }
         }
