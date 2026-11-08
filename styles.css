@@ -547,6 +547,7 @@ h6 {
 }
 
 @media (max-width: 768px) {
+    .impact-section { border-radius: 24px; margin: 2rem 0.5rem 3rem; }
     .about-stack { gap: 4rem; }
     .sphere-section { padding: 5rem 1.25rem; }
 }
@@ -832,6 +833,8 @@ h6 {
 /* "Vertige at a Glance": dark section with the cursor-following dash blob */
 .impact-section {
     background: #000;
+    margin: 3rem 0.75rem 4rem;
+    border-radius: 32px;
     min-height: 80vh;
     display: flex;
     align-items: center;
