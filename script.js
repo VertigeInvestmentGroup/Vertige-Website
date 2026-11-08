@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const mobile = width < 700;
             baseR = Math.min(mobile ? 300 : 640, Math.min(width, height) * 0.62);
-            count = mobile ? 190 : 330;
+            count = mobile ? 210 : 363;
             [u, ang, ph, kk, len, x, y, vx, vy, sc] = Array.from({ length: 10 }, () => new Float32Array(count));
             lists = Array.from({ length: NC * 3 }, () => new Uint16Array(count));
             lists.n = new Uint16Array(NC * 3);
