@@ -103,9 +103,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // --- Landing page: cursor-following blob of dashes ---
-    // A living cloud of small multicoloured dashes forms a soft blob that trails the cursor
-    // (and wanders on its own when the cursor is away). The blob pulses and its outline
-    // undulates; every dash springs toward its slot, wobbles, and stretches along its motion.
+    // A cloud of small dashes forms a soft blob that trails the cursor (and wanders on its own
+    // when the cursor is away). Every dash points at the blob's centre, ripples travel outward
+    // through the blob, and a wave of colour sweeps around it.
     function initParticleField(container) {
         const canvas = document.createElement('canvas');
         canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
@@ -113,13 +113,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         const ctx = canvas.getContext('2d', { alpha: true });
 
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const COLORS = ['#4a63e6', '#9a52b8', '#e0475f', '#f59a23', '#f4c20d'];
-        const WIDTHS = [2, 2];
-        const NB = COLORS.length * WIDTHS.length;
+        // cyclic palette: blue -> purple -> red -> orange -> yellow -> and back again
+        const STOPS = [[74, 99, 230], [154, 82, 184], [224, 71, 95], [245, 154, 35], [244, 194, 13]];
+        const NC = 16;
+        const PALETTE = [];
+        for (let k = 0; k < NC; k++) {
+            const q = k / NC * 2; // 0..2 over the loop
+            const w = q <= 1 ? q : 2 - q; // triangle: forward then back
+            const pos = w * (STOPS.length - 1);
+            const i0 = Math.min(STOPS.length - 2, Math.floor(pos)), f0 = pos - i0;
+            const c = STOPS[i0].map((v, j) => Math.round(v + (STOPS[i0 + 1][j] - v) * f0));
+            PALETTE.push('rgb(' + c.join(',') + ')');
+        }
 
         let width = 0, height = 0, dpr = 1, count = 0, baseR = 200;
-        let u, ang, ph, spd, kk, len, x, y, vx, vy, dir;
-        let buckets = [];
+        let u, ang, ph, kk, len, x, y, vx, vy;
+        let lists = [];
         let rect = container.getBoundingClientRect();
         const mouse = { x: 0, y: 0, active: false };
         const blob = { x: 0, y: 0, vx: 0, vy: 0 };
@@ -133,51 +142,49 @@ document.addEventListener("DOMContentLoaded", async () => {
             canvas.height = Math.round(height * dpr);
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.lineCap = 'round';
+            ctx.lineWidth = 2;
 
             const mobile = width < 700;
             baseR = Math.min(mobile ? 170 : 260, Math.min(width, height) * 0.36);
             count = mobile ? 260 : 440;
-            [u, ang, ph, spd, kk, len, x, y, vx, vy, dir] = Array.from({ length: 11 }, () => new Float32Array(count));
-            const bk = new Uint8Array(count);
-            buckets = Array.from({ length: NB }, () => []);
+            [u, ang, ph, kk, len, x, y, vx, vy] = Array.from({ length: 9 }, () => new Float32Array(count));
+            lists = Array.from({ length: NC }, () => new Uint16Array(count));
+            lists.n = new Uint16Array(NC);
             if (!blob.x) { blob.x = width * 0.5; blob.y = height * 0.5; }
             const golden = 2.399963;
             for (let i = 0; i < count; i++) {
-                const t = Math.sqrt((i + 0.5) / count);
-                u[i] = t;
+                u[i] = Math.sqrt((i + 0.5) / count);
                 ang[i] = i * golden;
                 ph[i] = Math.random() * 6.283;
-                spd[i] = 0.6 + Math.random() * 1.2;
-                kk[i] = 0.03 + Math.random() * 0.06; // different stiffness gives a trailing swarm
-                const bell = Math.exp(-Math.pow((t - 0.55) / 0.35, 2));
-                const big = Math.random() < 0.85;
-                len[i] = big ? 2.6 + Math.random() * 1.4 : 0.2;
-                const wi = big ? 1 : 0;
-                let c = 0.5 + 0.5 * Math.cos(ang[i] + Math.PI * 0.75);
-                c = Math.min(0.999, Math.max(0, c + (Math.random() - 0.5) * 0.3));
-                bk[i] = (COLORS.length - 1 - Math.floor(c * COLORS.length)) * WIDTHS.length + wi;
-                buckets[bk[i]].push(i);
+                kk[i] = 0.03 + Math.random() * 0.06; // varied stiffness gives a trailing swarm
+                len[i] = Math.random() < 0.85 ? 2.8 + Math.random() * 1.4 : 0.2;
                 x[i] = blob.x; y[i] = blob.y;
-                dir[i] = ang[i];
             }
         }
 
-        let ca, sa;
-        function draw() {
+        function draw(t) {
             ctx.clearRect(0, 0, width, height);
-            for (let b = 0; b < NB; b++) {
-                const list = buckets[b];
-                if (!list.length) continue;
-                const wi = b % WIDTHS.length;
-                ctx.strokeStyle = COLORS[(b / WIDTHS.length) | 0];
-                ctx.globalAlpha = 0.9;
-                ctx.lineWidth = WIDTHS[wi];
+            const n = lists.n;
+            n.fill(0);
+            // colour wave: a band of colour sweeps around the blob and ripples outward
+            for (let i = 0; i < count; i++) {
+                const w = 0.5 + 0.5 * Math.sin(ang[i] - t * 0.9 + u[i] * 3.2);
+                const k = Math.min(NC - 1, (w * NC) | 0);
+                lists[k][n[k]++] = i;
+            }
+            ctx.globalAlpha = 0.92;
+            for (let k = 0; k < NC; k++) {
+                if (!n[k]) continue;
+                ctx.strokeStyle = PALETTE[k];
                 ctx.beginPath();
-                for (let k = 0; k < list.length; k++) {
-                    const i = list[k];
-                    const sp = Math.min(Math.abs(vx[i]) + Math.abs(vy[i]), 10);
-                    const hl = len[i] * 0.5 * (1 + sp * 0.04);
-                    const dx = Math.cos(dir[i]) * hl, dy = Math.sin(dir[i]) * hl;
+                const list = lists[k];
+                for (let m = 0; m < n[k]; m++) {
+                    const i = list[m];
+                    // point at the blob centre
+                    const ddx = x[i] - blob.x, ddy = y[i] - blob.y;
+                    const dl = Math.hypot(ddx, ddy) || 1;
+                    const hl = len[i] * 0.5;
+                    const dx = ddx / dl * hl, dy = ddy / dl * hl;
                     ctx.moveTo(x[i] - dx, y[i] - dy);
                     ctx.lineTo(x[i] + dx, y[i] + dy);
                 }
@@ -192,7 +199,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const f = dt / 16.667;
             const t = now * 0.001;
 
-            // blob centre: follows the cursor with a soft lag, or drifts on its own
             let tx, ty;
             if (mouse.active) { tx = mouse.x; ty = mouse.y; }
             else {
@@ -204,32 +210,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             blob.vy += ((ty - blob.y) * bf - blob.vy) * 0.5;
             blob.x += blob.vx; blob.y += blob.vy;
 
-            const pulse = 1 + 0.09 * Math.sin(t * 2.4) + 0.04 * Math.sin(t * 5.1);
+            const pulse = 1 + 0.025 * Math.sin(t * 1.6);
             const damp = Math.pow(0.8, f);
             for (let i = 0; i < count; i++) {
                 const a = ang[i];
-                // undulating, pulsing outline
-                const shape = 1 + 0.13 * Math.sin(2 * a + t * 0.9) + 0.09 * Math.sin(3 * a - t * 1.3) + 0.05 * Math.sin(5 * a + t * 1.9);
-                // dashes breathe in and out individually so nothing sits still
-                const r = u[i] * baseR * pulse * shape + Math.sin(t * spd[i] * 2 + ph[i]) * 7;
-                const tx2 = blob.x + Math.cos(a + Math.sin(t * 0.4 + ph[i]) * 0.08) * r;
-                const ty2 = blob.y + Math.sin(a + Math.sin(t * 0.4 + ph[i]) * 0.08) * r;
+                // gentle undulating outline plus ripples travelling outward through the blob
+                const shape = 1 + 0.08 * Math.sin(2 * a + t * 0.8) + 0.05 * Math.sin(3 * a - t * 1.1);
+                const ripple = 1 + 0.07 * Math.sin(u[i] * 7 - t * 2.6);
+                const r = u[i] * baseR * pulse * shape * ripple;
+                const tx2 = blob.x + Math.cos(a) * r;
+                const ty2 = blob.y + Math.sin(a) * r;
                 const k = kk[i] * f;
                 vx[i] += (tx2 - x[i]) * k;
                 vy[i] += (ty2 - y[i]) * k;
                 vx[i] *= damp; vy[i] *= damp;
                 x[i] += vx[i] * f; y[i] += vy[i] * f;
-                // radial orientation, twisting and wobbling over time, leaning into motion
-                let d = a + Math.sin(t * spd[i] * 1.6 + ph[i]) * 0.5 + t * 0.15;
-                const sp = Math.abs(vx[i]) + Math.abs(vy[i]);
-                if (sp > 0.8) {
-                    const m = Math.atan2(vy[i], vx[i]);
-                    let diff = m - d; diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-                    d += diff * Math.min(0.7, sp * 0.12);
-                }
-                dir[i] = d;
             }
-            draw();
+            draw(t);
             rafId = requestAnimationFrame(frame);
         }
 
@@ -247,11 +244,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.addEventListener('mouseleave', () => { mouse.active = false; });
         window.addEventListener('scroll', () => { rect = container.getBoundingClientRect(); setMouse(mouse.x + rect.left, mouse.y + rect.top); }, { passive: true });
         let rt;
-        window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); draw(); }, 150); });
+        window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); draw(0); }, 150); });
 
         build();
-        for (let i = 0; i < count; i++) dir[i] = ang[i];
-        draw();
+        for (let i = 0; i < count; i++) { x[i] = blob.x + Math.cos(ang[i]) * u[i] * baseR; y[i] = blob.y + Math.sin(ang[i]) * u[i] * baseR; }
+        draw(0);
         if (!reduceMotion) {
             if ('IntersectionObserver' in window) {
                 new IntersectionObserver(entries => {
