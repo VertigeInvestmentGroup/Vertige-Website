@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             ctx.lineWidth = 3;
 
             const mobile = width < 700;
-            baseR = Math.min(mobile ? 200 : 420, Math.min(width, height) * 0.46);
+            baseR = Math.min(mobile ? 260 : 540, Math.min(width, height) * 0.58);
             count = mobile ? 190 : 330;
             [u, ang, ph, kk, len, x, y, vx, vy, sc] = Array.from({ length: 10 }, () => new Float32Array(count));
             lists = Array.from({ length: NC }, () => new Uint16Array(count));
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!blob.x) { blob.x = width * 0.5; blob.y = height * 0.5; }
             const golden = 2.399963;
             for (let i = 0; i < count; i++) {
-                u[i] = Math.pow((i + 0.5) / count, 0.3); // weighted toward the circumference
+                u[i] = Math.pow((i + 0.5) / count, 0.42); // weighted toward the circumference
                 ang[i] = i * golden;
                 ph[i] = Math.random() * 6.283;
                 kk[i] = 0.03 + Math.random() * 0.06; // varied stiffness gives a trailing swarm
@@ -200,7 +200,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             const t = now * 0.001;
 
             let tx, ty;
-            if (mouse.active) { tx = mouse.x; ty = mouse.y; }
+            if (mouse.active) {
+                // stay anchored near the centre, leaning only part of the way toward the cursor
+                tx = width * 0.5 + (mouse.x - width * 0.5) * 0.4;
+                ty = height * 0.5 + (mouse.y - height * 0.5) * 0.4;
+            }
             else {
                 tx = width * (0.5 + 0.07 * Math.sin(t * 0.25));
                 ty = height * (0.5 + 0.05 * Math.sin(t * 0.19 + 1.3));
