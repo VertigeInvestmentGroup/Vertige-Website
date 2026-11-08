@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             ctx.lineWidth = 3;
 
             const mobile = width < 700;
-            baseR = Math.min(mobile ? 260 : 540, Math.min(width, height) * 0.58);
+            baseR = Math.min(mobile ? 300 : 640, Math.min(width, height) * 0.62);
             count = mobile ? 190 : 330;
             [u, ang, ph, kk, len, x, y, vx, vy, sc] = Array.from({ length: 10 }, () => new Float32Array(count));
             lists = Array.from({ length: NC }, () => new Uint16Array(count));
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!blob.x) { blob.x = width * 0.5; blob.y = height * 0.5; }
             const golden = 2.399963;
             for (let i = 0; i < count; i++) {
-                u[i] = Math.pow((i + 0.5) / count, 0.32); // weighted toward the circumference
+                u[i] = 0.55 + 0.45 * Math.pow((i + 0.5) / count, 0.5); // open centre; dashes sit toward the circumference
                 ang[i] = i * golden;
                 ph[i] = Math.random() * 6.283;
                 kk[i] = 0.03 + Math.random() * 0.06; // varied stiffness gives a trailing swarm
