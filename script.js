@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             ctx.lineWidth = 3;
 
             const mobile = width < 700;
-            baseR = Math.min(mobile ? 240 : 480, Math.max(width, height) * (mobile ? 0.42 : 0.36));
+            baseR = Math.min(mobile ? 200 : 420, Math.min(width, height) * 0.46);
             count = mobile ? 190 : 330;
             [u, ang, ph, kk, len, x, y, vx, vy] = Array.from({ length: 9 }, () => new Float32Array(count));
             lists = Array.from({ length: NC }, () => new Uint16Array(count));
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!blob.x) { blob.x = width * 0.5; blob.y = height * 0.5; }
             const golden = 2.399963;
             for (let i = 0; i < count; i++) {
-                u[i] = Math.sqrt((i + 0.5) / count);
+                u[i] = Math.pow((i + 0.5) / count, 0.3); // weighted toward the circumference
                 ang[i] = i * golden;
                 ph[i] = Math.random() * 6.283;
                 kk[i] = 0.03 + Math.random() * 0.06; // varied stiffness gives a trailing swarm
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             n.fill(0);
             // colour wave: a band of colour sweeps around the blob and ripples outward
             for (let i = 0; i < count; i++) {
-                const w = 0.5 + 0.5 * Math.sin(ang[i] - t * 0.9 + u[i] * 3.2);
+                const w = 0.5 + 0.5 * Math.sin(ang[i] - t * 0.5 + u[i] * 3.2);
                 const k = Math.min(NC - 1, (w * NC) | 0);
                 lists[k][n[k]++] = i;
             }
@@ -202,21 +202,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             let tx, ty;
             if (mouse.active) { tx = mouse.x; ty = mouse.y; }
             else {
-                tx = width * (0.5 + 0.22 * Math.sin(t * 0.5));
-                ty = height * (0.5 + 0.18 * Math.sin(t * 0.37 + 1.3));
+                tx = width * (0.5 + 0.07 * Math.sin(t * 0.25));
+                ty = height * (0.5 + 0.05 * Math.sin(t * 0.19 + 1.3));
             }
-            const bf = 1 - Math.pow(1 - 0.07, f);
+            const bf = 1 - Math.pow(1 - 0.035, f);
             blob.vx += ((tx - blob.x) * bf - blob.vx) * 0.5;
             blob.vy += ((ty - blob.y) * bf - blob.vy) * 0.5;
             blob.x += blob.vx; blob.y += blob.vy;
 
-            const pulse = 1 + 0.025 * Math.sin(t * 1.6);
+            const pulse = 1 + 0.03 * Math.sin(t * 0.7);
             const damp = Math.pow(0.8, f);
             for (let i = 0; i < count; i++) {
                 const a = ang[i];
                 // gentle undulating outline plus ripples travelling outward through the blob
-                const shape = 1 + 0.08 * Math.sin(2 * a + t * 0.8) + 0.05 * Math.sin(3 * a - t * 1.1);
-                const ripple = 1 + 0.07 * Math.sin(u[i] * 7 - t * 2.6);
+                const shape = 1 + 0.015 * Math.sin(2 * a + t * 0.4) + 0.01 * Math.sin(3 * a - t * 0.5);
+                const ripple = 1 + 0.05 * Math.sin(u[i] * 9 - t * 1.2);
                 const r = u[i] * baseR * pulse * shape * ripple;
                 const tx2 = blob.x + Math.cos(a) * r;
                 const ty2 = blob.y + Math.sin(a) * r;
