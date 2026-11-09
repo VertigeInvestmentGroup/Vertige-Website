@@ -235,6 +235,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             else {
                 tx = width * (0.5 + 0.07 * Math.sin(t * 0.25));
                 ty = height * (0.5 + 0.05 * Math.sin(t * 0.19 + 1.3));
+                if (width < 700) {
+                    // Mobile: these containers are much taller than the screen, so keep the blob near the
+                    // middle of what is on screen (kept inside the container) instead of the container's centre
+                    const lo = baseR * 0.45, hi = height - baseR * 0.45;
+                    const vc = window.innerHeight * 0.5 - rect.top;
+                    ty = (hi > lo ? Math.min(hi, Math.max(lo, vc)) : height * 0.5) + baseR * 0.05 * Math.sin(t * 0.19 + 1.3);
+                }
             }
             // two-stage exponential easing, independent of frame rate, so motion stays silky on 60/120/144Hz screens
             const e1 = 1 - Math.exp(-dt / 480), e2 = 1 - Math.exp(-dt / 420);
@@ -279,12 +286,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             mouse.active = mouse.x >= -80 && mouse.x <= width + 80 && mouse.y >= -80 && mouse.y <= height + 80;
         }
         // Touch devices: the blob drifts on its own and ignores touches; cursor-following is for mouse pointers only
+        let hasMouse = false; // true only once a real mouse has moved (scroll must not 'activate' a pointer that never existed)
         const touchOnly = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
         if (!touchOnly) {
-            window.addEventListener('mousemove', e => setMouse(e.clientX, e.clientY), { passive: true });
+            window.addEventListener('mousemove', e => { hasMouse = true; setMouse(e.clientX, e.clientY); }, { passive: true });
         }
         document.addEventListener('mouseleave', () => { mouse.active = false; });
-        window.addEventListener('scroll', () => { rect = container.getBoundingClientRect(); setMouse(mouse.x + rect.left, mouse.y + rect.top); }, { passive: true });
+        window.addEventListener('scroll', () => { rect = container.getBoundingClientRect(); if (hasMouse) setMouse(mouse.x + rect.left, mouse.y + rect.top); }, { passive: true });
         let rt;
         let lastW = 0;
         window.addEventListener('resize', () => {
