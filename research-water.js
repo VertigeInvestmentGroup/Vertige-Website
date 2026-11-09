@@ -22,23 +22,29 @@
         'uniform vec2 uCanvas; uniform vec4 uDraw; uniform vec2 uImgPx; uniform float uT;',
         'vec3 col(vec2 u){ return texture2D(uImg, u).rgb; }',
         'float msk(vec2 u){ return texture2D(uMask, u).r; }',
+        'float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }',
+        'float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);',
+        '  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y); }',
+        // only the bright foam is carried along; dark water and rocks are never moved
+        'vec3 foam(vec2 u){ vec3 c = col(u); float l = dot(c, vec3(0.299, 0.587, 0.114)); return c * smoothstep(0.30, 0.60, l) * msk(u); }',
         'void main(){',
         '  vec2 px = v * uCanvas;',
         '  vec2 uv = (px - uDraw.xy) / uDraw.zw;',
         '  vec3 base = col(uv);',
         '  float m = msk(uv);',
         '  if (m < 0.01) { gl_FragColor = vec4(base, 1.0); return; }',
-        '  vec2 dir = normalize(vec2(-0.22, 1.0)) / uImgPx;',     // downstream, towards the viewer
-        '  float amp = 46.0;',                                     // image pixels travelled per phase
-        '  float p0 = fract(uT / 2.6);',
-        '  float p1 = fract(uT / 2.6 + 0.5);',
+        '  vec2 q = uv * uImgPx / 56.0;',
+        '  float ph = vn(q);',                                           // every patch of water is on its own clock
+        '  float a = (vn(q * 0.45 + 7.0) - 0.5) * 1.1;',               // flow direction meanders a little
+        '  vec2 d = vec2(-0.22, 1.0); d = normalize(vec2(d.x * cos(a) - d.y * sin(a), d.x * sin(a) + d.y * cos(a)));',
+        '  float amp = 30.0 * (0.75 + 0.5 * vn(q * 0.6 + 3.0));',      // and its speed varies from patch to patch
+        '  vec2 dir = d / uImgPx;',
+        '  float p0 = fract(uT / 3.4 + ph);',
+        '  float p1 = fract(p0 + 0.5);',
         '  float w0 = 1.0 - abs(2.0 * p0 - 1.0);',
-        '  vec2 wob = 0.0007 * vec2(sin(uv.y * 70.0 + uT * 1.2 + sin(uv.x * 40.0) * 2.0), sin(uv.x * 55.0 - uT * 1.0 + sin(uv.y * 30.0) * 2.0));',
-        '  vec2 u0 = uv - dir * p0 * amp + wob;',
-        '  vec2 u1 = uv - dir * p1 * amp + wob;',
-        '  vec3 c0 = mix(base, col(u0), m * msk(u0));',
-        '  vec3 c1 = mix(base, col(u1), m * msk(u1));',
-        '  gl_FragColor = vec4(mix(c1, c0, w0), 1.0);',
+        '  vec3 moved = w0 * foam(uv - dir * p0 * amp) + (1.0 - w0) * foam(uv - dir * p1 * amp);',
+        '  vec3 outc = base - m * foam(uv) + m * moved;',
+        '  gl_FragColor = vec4(clamp(outc, 0.0, 1.0), 1.0);',
         '}'
     ].join('\n');
 
