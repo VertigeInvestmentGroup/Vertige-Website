@@ -32,7 +32,7 @@
         '  float w = tree * (0.25 + 0.75 * high) * (1.0 - river);',
         '  float gust = 0.55 + 0.45 * sin(uT * 0.21 + uv.x * 2.0);',                  // the wind comes and goes
         '  float s = 0.65 * sin(uT * 1.1 + uv.x * 7.0 + uv.y * 3.0) + 0.35 * sin(uT * 0.55 - uv.y * 11.0 + uv.x * 3.0);',
-        '  vec2 d = vec2(s, 0.22 * s * sin(uT * 0.7 + uv.x * 5.0)) * 0.0030 * gust * w;',
+        '  vec2 d = vec2(s, 0.22 * s * sin(uT * 0.7 + uv.x * 5.0)) * 0.0048 * gust * w;',
         '  gl_FragColor = vec4(col(uv + d), 1.0);',
         '}'
     ].join('\n');
