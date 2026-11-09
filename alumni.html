@@ -42,8 +42,8 @@
         }
         .pl-stone:hover { transform: translateY(-3px); border-color: #cfd0d8; box-shadow: 0 14px 30px -18px rgba(10, 25, 47, .4); }
         .pl-stone-logo { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; }
-        .pl-stone-logo img { max-height: 50px; max-width: 88%; object-fit: contain; }
-        .pl-stone-logo img.sq { max-height: 70px; }
+        .pl-stone-logo img { max-height: calc(50px * var(--s, 1)); max-width: 88%; object-fit: contain; }
+        .pl-stone-logo img.sq { max-height: calc(70px * var(--s, 1)); }
         .pl-stone-logo .pl-word { font-size: 1.15rem; }
         .pl-stone-tag { text-align: center; font-size: 0.74rem; line-height: 1.4; font-weight: 500; color: #1f2937; }
         .pl-stone-tag span { display: block; font-weight: 400; color: #4b5563; }
@@ -185,7 +185,7 @@
             // a logo image if one is provided, otherwise the firm name as a clean wordmark
             function logo(p) {
                 if (!p.logo) return '<span class="pl-word">' + esc(p.firm) + '</span>';
-                return '<img src="' + esc(p.logo) + '" alt="' + esc(p.firm) + '" loading="lazy" onload="if(this.naturalWidth/this.naturalHeight<1.8)this.classList.add(\'sq\')" onerror="var s=document.createElement(\'span\');s.className=\'pl-word\';s.textContent=this.alt;this.replaceWith(s)">';
+                return '<img src="' + esc(p.logo) + '"' + (p.scale ? ' style="--s:' + p.scale + '"' : '') + ' alt="' + esc(p.firm) + '" loading="lazy" onload="if(this.naturalWidth/this.naturalHeight<1.8)this.classList.add(\'sq\')" onerror="var s=document.createElement(\'span\');s.className=\'pl-word\';s.textContent=this.alt;this.replaceWith(s)">';
             }
 
             // scrolling strip: each firm once, repeated so the loop is seamless
