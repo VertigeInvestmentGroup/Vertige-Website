@@ -33,10 +33,11 @@
                 x: a[k], y: a[k + 1], w: a[k + 2], h: a[k + 3],
                 v: 0,                                   // how far "off" it is, 0 (lit) to 1 (dark)
                 tgt: 0,
-                delay: 0
+                delay: 0,
+                ph: Math.random() * 1.2                 // a little individual wobble in the breathing
             });
-            var gk = Math.floor(a[k] / 70) + ':' + Math.floor(a[k + 1] / 45);
-            (groups[gk] = groups[gk] || { m: [], tgt: 0, next: 1 + Math.random() * 14 }).m.push(lights[i]);
+            var gk = Math.floor(a[k] / 52) + ':' + Math.floor(a[k + 1] / 34);
+            (groups[gk] = groups[gk] || { m: [], tgt: 0, next: 0.5 + Math.random() * 8 }).m.push(lights[i]);
         }
         glist = Object.keys(groups).map(function (q) { return groups[q]; });
         size();
@@ -66,6 +67,7 @@
         if (acc < 1 / 30 || !ready) return;
         var step = acc; acc = 0;
 
+        var tt = now * 0.001;
         var os = data.offScale;   // off-image pixels per source pixel
         ctx.clearRect(0, 0, W, H);
         // a group (a few windows close together, like one floor) goes dark and comes back as one
@@ -74,7 +76,7 @@
             G.next -= step;
             if (G.next <= 0) {
                 G.tgt = G.tgt ? 0 : 1;
-                G.next = G.tgt ? 3 + Math.random() * 5 : 6 + Math.random() * 14;
+                G.next = G.tgt ? 2 + Math.random() * 4 : 3 + Math.random() * 9;
                 for (var j = 0; j < G.m.length; j++) G.m[j].delay = Math.random() * 0.5;
                 G.fire = true;
             }
@@ -89,9 +91,12 @@
             var L = lights[i];
             // ease: well under a second to fade either way
             L.v += (L.tgt - L.v) * Math.min(1, step * 3.2);
-            if (L.v < 0.015) continue;
+            // the whole city breathes: a slow swell of light and shade rolling left to right
+            var br = 0.5 + 0.5 * Math.sin(tt * 0.75 - L.x * 0.0021 + L.ph);
+            var amt = L.v + (1 - L.v) * 0.34 * br * br;
+            if (amt < 0.015) continue;
             var px = L.x - PAD, py = L.y - PAD, pw = L.w + PAD * 2, ph = L.h + PAD * 2;
-            ctx.globalAlpha = L.v;
+            ctx.globalAlpha = amt;
             ctx.drawImage(off, (px + set.ox) * os, py * os, pw * os, ph * os,
                 ox + px * sx, oy + py * sx, pw * sx, ph * sx);
         }
