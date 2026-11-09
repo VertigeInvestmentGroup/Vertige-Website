@@ -1,11 +1,17 @@
-// Alumni hero: window lights in the skyline photo flicker on and off.
-// A transparent canvas sits between the photo and the dark overlay; to "switch off" a light we paint a
-// patch of the surrounding dark colour over it, fading in and out. Positions come from alumni-lights.js.
+// Alumni hero: a few window lights in the skyline photo slowly fade off and back on.
+// A transparent canvas sits between the photo and the dark overlay. To "switch off" a light we cross-fade in the
+// same spot from a copy of the photo with the lights painted out (alumni_hero_off.webp), so the window simply
+// returns to the dark facade behind it. Positions come from alumni-lights.js.
 (function () {
     var hero = document.querySelector('.rs-hero');
     var data = window.VIG_LIGHTS;
     if (!hero || !data) return;
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var off = new Image();
+    var ready = false;
+    off.onload = function () { ready = true; };
+    off.src = 'alumni_hero_off.webp?v=1';
 
     var canvas = document.createElement('canvas');
     canvas.setAttribute('aria-hidden', 'true');
@@ -15,20 +21,20 @@
 
     var set, lights = [], W = 0, H = 0, dpr = 1, sx = 1, ox = 0, oy = 0;
     var mq = window.matchMedia ? window.matchMedia('(max-width: 768px)') : { matches: false };
+    var PAD = 2;   // source pixels of margin around each light, so the patch blends into its surroundings
 
     function build() {
         set = mq.matches ? data.m : data.d;
-        var a = set.a, n = a.length / 7;
+        var a = set.a, n = a.length / 4;
         lights = [];
         for (var i = 0; i < n; i++) {
-            var k = i * 7;
+            var k = i * 4;
             lights.push({
                 x: a[k], y: a[k + 1], w: a[k + 2], h: a[k + 3],
-                c: 'rgb(' + a[k + 4] + ',' + a[k + 5] + ',' + a[k + 6] + ')',
-                off: Math.random() < 0.12 ? 1 : 0,   // current darkness 0..1
-                tgt: 0, next: Math.random() * 20      // seconds until the next change
+                v: 0,                                   // how far "off" it is, 0 (lit) to 1 (dark)
+                tgt: 0,
+                next: 2 + Math.random() * 40            // seconds until it next changes
             });
-            lights[i].tgt = lights[i].off;
         }
         size();
     }
@@ -54,30 +60,25 @@
         last = now;
         acc += dt;
         raf = requestAnimationFrame(frame);
-        if (acc < 1 / 30) return;          // ~30fps is plenty for a flicker
+        if (acc < 1 / 30 || !ready) return;
         var step = acc; acc = 0;
 
+        var os = data.offScale;   // off-image pixels per source pixel
         ctx.clearRect(0, 0, W, H);
         for (var i = 0; i < lights.length; i++) {
             var L = lights[i];
             L.next -= step;
             if (L.next <= 0) {
-                if (L.tgt === 0) {                       // on -> off (a quarter of the time it is just a quick blink)
-                    L.tgt = 1;
-                    L.blink = Math.random() < 0.25;
-                    L.next = L.blink ? 0.3 + Math.random() * 0.5 : 1.5 + Math.random() * 6;
-                } else {                                  // off -> on (blinks often flicker straight off again)
-                    L.tgt = 0;
-                    L.next = (L.blink && Math.random() < 0.6) ? 0.2 + Math.random() * 0.4 : 8 + Math.random() * 32;
-                    L.blink = false;
-                }
+                if (L.tgt === 0) { L.tgt = 1; L.next = 4 + Math.random() * 7; }          // dark for a few seconds
+                else { L.tgt = 0; L.next = 25 + Math.random() * 55; }                     // then lit for a good while
             }
-            var rate = L.tgt > L.off ? 6 : 3;           // fade out quickly, glow back on a little slower
-            L.off += Math.max(-1, Math.min(1, (L.tgt - L.off) * rate * step * 1.4));
-            if (L.off < 0.02) continue;
-            ctx.globalAlpha = L.off;
-            ctx.fillStyle = L.c;
-            ctx.fillRect(ox + (L.x - 1.2) * sx, oy + (L.y - 1.2) * sx, (L.w + 2.4) * sx, (L.h + 2.4) * sx);
+            // slow ease: roughly a second to fade either way
+            L.v += (L.tgt - L.v) * Math.min(1, step * 2.2);
+            if (L.v < 0.015) continue;
+            var px = L.x - PAD, py = L.y - PAD, pw = L.w + PAD * 2, ph = L.h + PAD * 2;
+            ctx.globalAlpha = L.v;
+            ctx.drawImage(off, (px + set.ox) * os, py * os, pw * os, ph * os,
+                ox + px * sx, oy + py * sx, pw * sx, ph * sx);
         }
         ctx.globalAlpha = 1;
     }
@@ -88,8 +89,10 @@
     build();
     start();
 
-    var rt;
-    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { var wasMobile = set === data.m; if (wasMobile !== mq.matches) build(); else size(); }, 150); });
+    window.addEventListener('resize', function () {
+        clearTimeout(build.t);
+        build.t = setTimeout(function () { var wasMobile = set === data.m; if (wasMobile !== mq.matches) build(); else size(); }, 150);
+    });
     if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (e) { e[0].isIntersecting ? start() : stop(); }).observe(hero);
     }
