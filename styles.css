@@ -1521,3 +1521,11 @@ body:not(.home-page) h2.hero-title,
     line-height: 1.15 !important;
     letter-spacing: -0.03em !important;
 }
+
+/* Mobile: give the landing text proper side margins (the earlier mobile rule zeroed the section padding) */
+@media (max-width: 768px) {
+    .sphere-section { padding: 5rem 1.75rem; }
+    .about-stack { gap: 4.5rem; }
+    .about-text { font-size: 1.05rem; line-height: 1.75; max-width: 34rem; }
+    .about-title { margin-bottom: 1.25rem; }
+}
