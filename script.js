@@ -721,6 +721,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 nameEl.innerText = name;
                 roleEl.innerText = role;
+                const liEl = document.getElementById('modalLinkedIn');
+                if (liEl) {
+                    const url = card.dataset.linkedin;
+                    if (url) { liEl.href = url; liEl.hidden = false; } else { liEl.hidden = true; }
+                }
 
                 if (bioEl) {
                     bioEl.style.display = 'none';
