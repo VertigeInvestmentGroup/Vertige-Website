@@ -33,7 +33,7 @@
                 x: a[k], y: a[k + 1], w: a[k + 2], h: a[k + 3],
                 v: 0,                                   // how far "off" it is, 0 (lit) to 1 (dark)
                 tgt: 0,
-                next: 2 + Math.random() * 40            // seconds until it next changes
+                next: 1 + Math.random() * 18            // seconds until it next changes
             });
         }
         size();
@@ -69,11 +69,11 @@
             var L = lights[i];
             L.next -= step;
             if (L.next <= 0) {
-                if (L.tgt === 0) { L.tgt = 1; L.next = 4 + Math.random() * 7; }          // dark for a few seconds
-                else { L.tgt = 0; L.next = 25 + Math.random() * 55; }                     // then lit for a good while
+                if (L.tgt === 0) { L.tgt = 1; L.next = 3 + Math.random() * 6; }          // dark for a few seconds
+                else { L.tgt = 0; L.next = 8 + Math.random() * 22; }                      // then lit again for a while
             }
-            // slow ease: roughly a second to fade either way
-            L.v += (L.tgt - L.v) * Math.min(1, step * 2.2);
+            // ease: well under a second to fade either way
+            L.v += (L.tgt - L.v) * Math.min(1, step * 3.2);
             if (L.v < 0.015) continue;
             var px = L.x - PAD, py = L.y - PAD, pw = L.w + PAD * 2, ph = L.h + PAD * 2;
             ctx.globalAlpha = L.v;
