@@ -286,9 +286,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.addEventListener('mouseleave', () => { mouse.active = false; });
         window.addEventListener('scroll', () => { rect = container.getBoundingClientRect(); setMouse(mouse.x + rect.left, mouse.y + rect.top); }, { passive: true });
         let rt;
-        window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); draw(0); }, 150); });
+        let lastW = 0;
+        window.addEventListener('resize', () => {
+            clearTimeout(rt);
+            rt = setTimeout(() => {
+                const r = container.getBoundingClientRect();
+                // Mobile browsers fire resize on every scroll as the address bar shows/hides.
+                // If the width is unchanged, keep the particles as they are (no rebuild / re-expand).
+                if (lastW && Math.abs(r.width - lastW) < 1) {
+                    if (Math.abs(r.height - height) > 1) {
+                        rect = r; height = r.height;
+                        canvas.height = Math.round(height * dpr);
+                        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                        ctx.lineCap = 'round'; ctx.lineWidth = 3;
+                        first = true;
+                    }
+                    return;
+                }
+                lastW = r.width;
+                build(); draw(0);
+            }, 150);
+        });
 
         build();
+        lastW = width;
         for (let i = 0; i < count; i++) { x[i] = blob.x + Math.cos(ang[i]) * u[i] * baseR; y[i] = blob.y + Math.sin(ang[i]) * u[i] * baseR; }
         draw(0);
         if (!reduceMotion) {
