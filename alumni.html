@@ -11,9 +11,16 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300..700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=1794198199">
+    <link rel="preload" as="image" href="alumni_hero.webp" media="(min-width: 769px)" fetchpriority="high">
+    <link rel="preload" as="image" href="alumni_hero_m.webp" media="(max-width: 768px)" fetchpriority="high">
+    <link rel="stylesheet" href="styles.css?v=1794199509">
     <style>
         [hidden] { display: none !important; }
+        body .rs-hero .hero-title { color: #fff !important; margin-bottom: 1.25rem; text-align: left; }
+        body .rs-hero .hero-subtitle { color: rgba(255, 255, 255, 0.85) !important; }
+        .rs-hero { background-image: url('alumni_hero.webp'); background-position: center 55%; }
+        @media (max-width: 768px) { .rs-hero { background-image: url('alumni_hero_m.webp'); background-position: center 62%; } }
+        body .page-wrapper.pl-main { padding-top: 0; }
         .pl-title { font-family: var(--font-heading); text-align: center; color: #111827; margin: 0; }
 
         /* Scrolling logo strip */
@@ -64,7 +71,7 @@
  <!-- Particles -->
     </div>
 
-    <nav id="navbar" class="navbar scrolled">
+    <nav id="navbar" class="navbar navbar-home">
         <div class="nav-container">
             <a href="index.html" class="logo">
                 <img src="logo_transparent.png" alt="Vertige Logo" class="logo-img">
@@ -98,10 +105,14 @@
 
 
 
-    <main class="page-wrapper container">
-        <div class="page-header fade-up" style="margin-bottom: 0;">
-            <h1 class="pl-title">Alumni</h1>
+    <header class="hero rs-hero">
+        <div class="container hero-content fade-up">
+            <h1 class="hero-title">Alumni</h1>
+            <p class="hero-subtitle">Where Vertige members have gone on to build their careers.</p>
         </div>
+    </header>
+
+    <main class="page-wrapper pl-main container">
 
         <div id="plEmpty" class="pl-empty" hidden>
             <h2>Placements coming soon</h2>
@@ -202,7 +213,7 @@
             }).join('');
         })();
     </script>
-    <script src="script.js?v=1794198199"></script>
+    <script src="script.js?v=1794199509"></script>
 </body>
 
 </html>
