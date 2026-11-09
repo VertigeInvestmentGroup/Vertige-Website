@@ -11,8 +11,39 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300..700&display=swap"
         rel="stylesheet">
+    <link rel="preload" as="image" href="research_hero.webp" fetchpriority="high">
     <link rel="stylesheet" href="styles.css?v=1794194629">
     <style>
+        .rs-banner {
+            position: relative;
+            margin: 84px 0.75rem 0;
+            min-height: 46vh;
+            border-radius: 32px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #1c2a24 url('research_hero.webp') center 45% / cover no-repeat;
+        }
+
+        .rs-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(5, 15, 20, 0.35), rgba(5, 15, 20, 0.55));
+        }
+
+        .rs-banner h1 {
+            position: relative;
+            color: #fff !important;
+            margin: 0 !important;
+            padding: 4rem 1.5rem;
+        }
+
+        body .page-wrapper.rs-main { padding-top: 0; }
+        .rs-main .research-container { padding-top: 3.5rem; }
+
         .research-container {
             padding: 6rem 0;
             max-width: 1100px;
@@ -290,11 +321,13 @@
     </div>
 
     <!-- Main Content -->
-    <main class="page-wrapper fade-up">
+    <section class="rs-banner" role="img" aria-label="Misty forested valley with a river">
+        <h1>Latest Releases</h1>
+    </section>
+
+    <main class="page-wrapper rs-main fade-up">
         <div class="container research-container">
             <div class="research-header">
-                <h1>Latest Releases</h1>
-
                 <!-- Search Bar -->
                 <div class="research-search-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
