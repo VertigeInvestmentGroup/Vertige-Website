@@ -706,14 +706,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Team page: monogram avatars until real photos are added
-    const initialsOf = n => n.trim().split(/\s+/).filter(Boolean).map((w, i, arr) => (i === 0 || i === arr.length - 1) ? w[0] : '').join('').toUpperCase();
-    document.querySelectorAll('.team-card').forEach(card => {
-        const av = card.querySelector('.team-avatar');
-        const nm = card.querySelector('h3');
-        if (av && nm && !av.style.backgroundImage) av.textContent = initialsOf(nm.innerText);
-    });
-
     // --- Team Modal Logic ---
     const teamModal = document.getElementById('teamModal');
     if (teamModal) {
@@ -728,8 +720,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const role = card.querySelector('.team-role').innerText;
 
                 nameEl.innerText = name;
-                const modalAv = teamModal.querySelector('.team-modal-avatar');
-                if (modalAv) modalAv.textContent = initialsOf(name);
                 roleEl.innerText = role;
 
                 if (bioEl) {
