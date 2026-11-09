@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Figtree:wght@300..700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=1794196187">
+    <link rel="stylesheet" href="styles.css?v=1794196266">
     <style>
         .team-grid {
             display: grid;
@@ -37,18 +37,14 @@
         }
 
         .team-linkedin {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
+            display: inline-block;
+            line-height: 0;
             margin-top: 1.25rem;
-            border-radius: 10px;
-            background: #f1f1f4;
-            color: #8b8b95;
-            transition: background .2s, color .2s;
+            color: #b4b4bc;
+            transition: color .2s;
         }
-        .team-linkedin:hover { background: #0a66c2; color: #fff; }
+        .team-linkedin svg { width: 30px; height: 30px; display: block; }
+        .team-linkedin:hover { color: #0a66c2; }
         .team-linkedin[hidden] { display: none; }
 
         .team-avatar {
@@ -658,7 +654,7 @@
         </div>
     </footer>
 
-    <script src="script.js?v=1794196187"></script>
+    <script src="script.js?v=1794196266"></script>
 </body>
 
 </html>
