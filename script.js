@@ -278,8 +278,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             mouse.x = cx - rect.left; mouse.y = cy - rect.top;
             mouse.active = mouse.x >= -80 && mouse.x <= width + 80 && mouse.y >= -80 && mouse.y <= height + 80;
         }
-        window.addEventListener('mousemove', e => setMouse(e.clientX, e.clientY), { passive: true });
-        window.addEventListener('touchmove', e => { if (e.touches[0]) setMouse(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+        // Touch devices: the blob drifts on its own and ignores touches; cursor-following is for mouse pointers only
+        const touchOnly = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        if (!touchOnly) {
+            window.addEventListener('mousemove', e => setMouse(e.clientX, e.clientY), { passive: true });
+        }
         document.addEventListener('mouseleave', () => { mouse.active = false; });
         window.addEventListener('scroll', () => { rect = container.getBoundingClientRect(); setMouse(mouse.x + rect.left, mouse.y + rect.top); }, { passive: true });
         let rt;

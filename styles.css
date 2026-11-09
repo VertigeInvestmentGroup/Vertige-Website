@@ -1183,10 +1183,6 @@ h6 {
    ========================================================================== */
 @media (max-width: 768px) {
 
-    #antigravity-bg {
-        display: none !important;
-    }
-
     /* — Navbar — */
     .nav-links,
     .nav-cta {
