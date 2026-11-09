@@ -13,7 +13,7 @@ window.VIG_PLACEMENTS = [
     { firm: "National Bank Financial Markets", logo: "logos/national-bank.png", placement: "Investment Banking", location: "Toronto" },
     { firm: "Portage Ventures", logo: "logos/portage.png", placement: "Research Team", location: "Toronto" },
     { firm: "Portage Ventures", logo: "logos/portage.png", placement: "Investment Team", location: "Toronto" },
-    { firm: "CPP Investments", logo: "logos/cpp.png", placement: "FICC and Equity Trading" },
+    { firm: "CPP Investments", logo: "logos/cpp.png", placement: "FICC and Equity Trading", location: "Toronto" },
     { firm: "J.P. Morgan", logo: "logos/jpmorgan.png", placement: "Investment Banking", location: "Indonesia" },
     { firm: "Navis Capital Partners", logo: "logos/navis.png", placement: "Private Credit", location: "Indonesia" },
     { firm: "RBC Capital Markets", logo: "logos/rbc.png", placement: "Global Markets", location: "Toronto" },
